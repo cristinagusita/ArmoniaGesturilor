@@ -27,7 +27,7 @@ def get_args():
     parser.add_argument("--min_detection_confidence",
                         help='min_detection_confidence',
                         type=float,
-                        default=0.7)
+                        default=0.9)
     parser.add_argument("--min_tracking_confidence",
                         help='min_tracking_confidence',
                         type=int,
@@ -185,6 +185,8 @@ def select_mode(key, mode):
     number = -1
     if 48 <= key <= 57:  # 0 ~ 9
         number = key - 48
+    if 65 <= key <= 90:
+        number = key - 55
     if key == 110:  # n
         mode = 0
     if key == 107:  # k
@@ -281,7 +283,7 @@ def pre_process_point_history(image, point_history):
 def logging_csv(number, mode, landmark_list, point_history_list):
     if mode == 0:
         pass
-    if mode == 1 and (0 <= number <= 9):
+    if mode == 1 and (0 <= number <= 35):
         csv_path = 'model/keypoint_classifier/keypoint.csv'
         with open(csv_path, 'a', newline="") as f:
             writer = csv.writer(f)
