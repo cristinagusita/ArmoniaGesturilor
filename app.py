@@ -15,8 +15,17 @@ from utils import CvFpsCalc
 from model import KeyPointClassifier
 from model import PointHistoryClassifier
 
+import pygame
+from threading import Thread
+import threading
+from time import sleep
+
+past_state = -1
+lock = threading.Lock()
+running_threads = {}
 
 def get_args():
+    pygame.init()
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--device", type=int, default=0)
@@ -37,8 +46,8 @@ def get_args():
 
     return args
 
-
 def main():
+    global past_state
     # Argument parsing #################################################################
     args = get_args()
 
@@ -141,6 +150,12 @@ def main():
 
                 # Hand sign classification
                 hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
+
+                if hand_sign_id != past_state:
+                    thread = Thread(target=play_key, args=(hand_sign_id, ))
+                    thread.start()
+                    past_state = hand_sign_id
+
                 if hand_sign_id == 2:  # Point gesture
                     point_history.append(landmark_list[8])
                 else:
@@ -194,6 +209,39 @@ def select_mode(key, mode):
     if key == 104:  # h
         mode = 2
     return number, mode
+
+def play_key(hand_sign_id): 
+    match hand_sign_id:
+        case 0: 
+            pygame.mixer.music.load('c3.mp3')
+            pygame.mixer.music.play()
+        case 1: 
+            pygame.mixer.music.load('d3.mp3')
+            pygame.mixer.music.play()
+        case 2: 
+            pygame.mixer.music.load('e3.mp3')
+            pygame.mixer.music.play()
+        case 3: 
+            pygame.mixer.music.load('f3.mp3')
+            pygame.mixer.music.play()
+        case 4: 
+            pygame.mixer.music.load('g3.mp3')
+            pygame.mixer.music.play()
+        case 5: 
+            pygame.mixer.music.load('a3.mp3')
+            pygame.mixer.music.play()
+        case 6: 
+            pygame.mixer.music.load('b3.mp3')
+            pygame.mixer.music.play()
+        case 7: 
+            pygame.mixer.music.load('c4.mp3')
+            pygame.mixer.music.play()
+        case 8:
+            pygame.mixer.music.load('d4.mp3')
+            pygame.mixer.music.play()
+        case 9:
+            pygame.mixer.music.load('e4.mp3')
+            pygame.mixer.music.play()
 
 
 def calc_bounding_rect(image, landmarks):
