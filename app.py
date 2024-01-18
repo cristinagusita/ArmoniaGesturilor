@@ -13,7 +13,6 @@ import mediapipe as mp
 
 from utils import CvFpsCalc
 from model import KeyPointClassifier
-from model import PointHistoryClassifier
 
 import pygame
 from threading import Thread
@@ -69,15 +68,12 @@ def main():
     # Model load #############################################################
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands(
-        static_image_mode=use_static_image_mode,
+        static_image_mode=True, 
         max_num_hands=2,
-        min_detection_confidence=min_detection_confidence,
-        min_tracking_confidence=min_tracking_confidence,
+        min_detection_confidence=0.5,
     )
 
     keypoint_classifier = KeyPointClassifier()
-
-    point_history_classifier = PointHistoryClassifier()
 
     # Read labels ###########################################################
     with open('model/keypoint_classifier/keypoint_classifier_label.csv',
@@ -86,24 +82,9 @@ def main():
         keypoint_classifier_labels = [
             row[0] for row in keypoint_classifier_labels
         ]
-    with open(
-            'model/point_history_classifier/point_history_classifier_label.csv',
-            encoding='utf-8-sig') as f:
-        point_history_classifier_labels = csv.reader(f)
-        point_history_classifier_labels = [
-            row[0] for row in point_history_classifier_labels
-        ]
 
     # FPS Measurement ########################################################
     cvFpsCalc = CvFpsCalc(buffer_len=10)
-
-    # Coordinate history #################################################################
-    history_length = 16
-    point_history = deque(maxlen=history_length)
-
-    # Finger gesture history ################################################
-    finger_gesture_history = deque(maxlen=history_length)
-
     #  ########################################################################
     mode = 0
 
@@ -126,7 +107,7 @@ def main():
         # Detection implementation #############################################################
         image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
 
-        image.flags.writeable = False
+        image.flags.writeable = False 
         results = hands.process(image)
         image.flags.writeable = True
 
@@ -134,7 +115,6 @@ def main():
         if results.multi_hand_landmarks is not None:
             for hand_landmarks, handedness in zip(results.multi_hand_landmarks,
                                                   results.multi_handedness):
-                # Bounding box calculation
                 brect = calc_bounding_rect(debug_image, hand_landmarks)
                 # Landmark calculation
                 landmark_list = calc_landmark_list(debug_image, hand_landmarks)
@@ -142,36 +122,15 @@ def main():
                 # Conversion to relative coordinates / normalized coordinates
                 pre_processed_landmark_list = pre_process_landmark(
                     landmark_list)
-                pre_processed_point_history_list = pre_process_point_history(
-                    debug_image, point_history)
-                # Write to the dataset file
-                logging_csv(number, mode, pre_processed_landmark_list,
-                            pre_processed_point_history_list)
 
                 # Hand sign classification
                 hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
 
                 if hand_sign_id != past_state:
+                    # In case the same finger is recognized for a certain period of time, it is recognized as a long press and is only played once.
                     thread = Thread(target=play_key, args=(hand_sign_id, ))
                     thread.start()
                     past_state = hand_sign_id
-
-                if hand_sign_id == 2:  # Point gesture
-                    point_history.append(landmark_list[8])
-                else:
-                    point_history.append([0, 0])
-
-                # Finger gesture classification
-                finger_gesture_id = 0
-                point_history_len = len(pre_processed_point_history_list)
-                if point_history_len == (history_length * 2):
-                    finger_gesture_id = point_history_classifier(
-                        pre_processed_point_history_list)
-
-                # Calculates the gesture IDs in the latest detection
-                finger_gesture_history.append(finger_gesture_id)
-                most_common_fg_id = Counter(
-                    finger_gesture_history).most_common()
 
                 # Drawing part
                 debug_image = draw_bounding_rect(use_brect, debug_image, brect)
@@ -181,12 +140,8 @@ def main():
                     brect,
                     handedness,
                     keypoint_classifier_labels[hand_sign_id],
-                    point_history_classifier_labels[most_common_fg_id[0][0]],
                 )
-        else:
-            point_history.append([0, 0])
 
-        debug_image = draw_point_history(debug_image, point_history)
         debug_image = draw_info(debug_image, fps, mode, number)
 
         # Screen reflection #############################################################
@@ -202,49 +157,80 @@ def select_mode(key, mode):
         number = key - 48
     if 65 <= key <= 90:
         number = key - 55
-    if key == 110:  # n
+    if key == 110:  # n - meutru, se intoarce la starea initiala
         mode = 0
-    if key == 107:  # k
+    if key == 107:  # k - pentru antrenare key points
         mode = 1
-    if key == 104:  # h
-        mode = 2
     return number, mode
 
 def play_key(hand_sign_id): 
     match hand_sign_id:
+        # case 0: 
+        #     pygame.mixer.music.load('c3.mp3')
+        #     pygame.mixer.music.play()
+        # case 1: 
+        #     pygame.mixer.music.load('d3.mp3')
+        #     pygame.mixer.music.play()
+        # case 2: 
+        #     pygame.mixer.music.load('e3.mp3')
+        #     pygame.mixer.music.play()
+        # case 3: 
+        #     pygame.mixer.music.load('f3.mp3')
+        #     pygame.mixer.music.play()
+        # case 4: 
+        #     pygame.mixer.music.load('g3.mp3')
+        #     pygame.mixer.music.play()
+        # case 5: 
+        #     pygame.mixer.music.load('a3.mp3')
+        #     pygame.mixer.music.play()
+        # case 6: 
+        #     pygame.mixer.music.load('b3.mp3')
+        #     pygame.mixer.music.play()
+        # case 7: 
+        #     pygame.mixer.music.load('c4.mp3')
+        #     pygame.mixer.music.play()
+        # case 8:
+        #     pygame.mixer.music.load('d4.mp3')
+        #     pygame.mixer.music.play()
+        # case 9:
+        #     pygame.mixer.music.load('e4.mp3')
+        #     pygame.mixer.music.play()
+
         case 0: 
-            pygame.mixer.music.load('c3.mp3')
+            pygame.mixer.music.load('./sounds/d3.mp3')
             pygame.mixer.music.play()
         case 1: 
-            pygame.mixer.music.load('d3.mp3')
+            pygame.mixer.music.load('./sounds/e3.mp3')
             pygame.mixer.music.play()
         case 2: 
-            pygame.mixer.music.load('e3.mp3')
+            pygame.mixer.music.load('./sounds/f3.mp3')
             pygame.mixer.music.play()
         case 3: 
-            pygame.mixer.music.load('f3.mp3')
+            pygame.mixer.music.load('./sounds/g3.mp3')
             pygame.mixer.music.play()
         case 4: 
-            pygame.mixer.music.load('g3.mp3')
+            pygame.mixer.music.load('./sounds/b3.mp3')
             pygame.mixer.music.play()
         case 5: 
-            pygame.mixer.music.load('a3.mp3')
+            pygame.mixer.music.load('./sounds/c4.mp3')
             pygame.mixer.music.play()
         case 6: 
-            pygame.mixer.music.load('b3.mp3')
+            pygame.mixer.music.load('./sounds/d4.mp3')
             pygame.mixer.music.play()
         case 7: 
-            pygame.mixer.music.load('c4.mp3')
+            pygame.mixer.music.load('./sounds/e4.mp3')
             pygame.mixer.music.play()
         case 8:
-            pygame.mixer.music.load('d4.mp3')
+            pygame.mixer.music.load('./sounds/c3.mp3')
             pygame.mixer.music.play()
         case 9:
-            pygame.mixer.music.load('e4.mp3')
+            pygame.mixer.music.load('./sounds/a3.mp3')
             pygame.mixer.music.play()
 
 
 def calc_bounding_rect(image, landmarks):
+    # This function does the following:
+    # Calculates the bouding box coordinates (x, y, w, h) from the landmarks.
     image_width, image_height = image.shape[1], image.shape[0]
 
     landmark_array = np.empty((0, 2), int)
@@ -263,6 +249,11 @@ def calc_bounding_rect(image, landmarks):
 
 
 def calc_landmark_list(image, landmarks):
+    # This function does the following:
+    # For each landmark, it calculates the pixel coordinates (x, y) on the image. The coordinates provided by MediaPipe 
+    # are normalized (ranging from 0 to 1), so they are scaled to the actual size of the image to get the pixel values.
+    # These pixel coordinates represent key points on the hand, such as the tips of the fingers, the joints, and the wrist.
+    # The method creates a list (landmark_point) where each item is a pair of coordinates (x, y) for each key point.
     image_width, image_height = image.shape[1], image.shape[0]
 
     landmark_point = []
@@ -279,6 +270,14 @@ def calc_landmark_list(image, landmarks):
 
 
 def pre_process_landmark(landmark_list):
+    # This function does the following:
+    # Relative Positioning: By normalizing landmarks relative to a specific point on the hand (like the wrist), you account for the hand's position in the image. 
+    # This makes the landmarks' positions relative to each other, rather than to the whole image.
+    # Scale Invariance: Normalizing the size of landmarks ensures that the gesture recognition is scale-invariant. 
+    # That means the size of the hand (whether it's close to the camera or far away) doesn't affect the recognition process.
+    # Consistency Across Different Inputs: This process helps in maintaining consistency of the landmark 
+    # data across different frames or different hands, making the gesture recognition more robust and reliable.
+
     temp_landmark_list = copy.deepcopy(landmark_list)
 
     # Convert to relative coordinates
@@ -305,30 +304,9 @@ def pre_process_landmark(landmark_list):
     return temp_landmark_list
 
 
-def pre_process_point_history(image, point_history):
-    image_width, image_height = image.shape[1], image.shape[0]
-
-    temp_point_history = copy.deepcopy(point_history)
-
-    # Convert to relative coordinates
-    base_x, base_y = 0, 0
-    for index, point in enumerate(temp_point_history):
-        if index == 0:
-            base_x, base_y = point[0], point[1]
-
-        temp_point_history[index][0] = (temp_point_history[index][0] -
-                                        base_x) / image_width
-        temp_point_history[index][1] = (temp_point_history[index][1] -
-                                        base_y) / image_height
-
-    # Convert to a one-dimensional list
-    temp_point_history = list(
-        itertools.chain.from_iterable(temp_point_history))
-
-    return temp_point_history
-
-
-def logging_csv(number, mode, landmark_list, point_history_list):
+def logging_csv(number, mode, landmark_list):
+    # This function does the following:
+    # It logs the key points and the key point history to a CSV file.
     if mode == 0:
         pass
     if mode == 1 and (0 <= number <= 35):
@@ -336,15 +314,13 @@ def logging_csv(number, mode, landmark_list, point_history_list):
         with open(csv_path, 'a', newline="") as f:
             writer = csv.writer(f)
             writer.writerow([number, *landmark_list])
-    if mode == 2 and (0 <= number <= 9):
-        csv_path = 'model/point_history_classifier/point_history.csv'
-        with open(csv_path, 'a', newline="") as f:
-            writer = csv.writer(f)
-            writer.writerow([number, *point_history_list])
     return
 
 
 def draw_landmarks(image, landmark_point):
+    # This function does the following:
+    # It draws the lines for fingers on the image
+    # It draws points for the key points
     if len(landmark_point) > 0:
         # Thumb
         cv.line(image, tuple(landmark_point[2]), tuple(landmark_point[3]),
@@ -444,87 +420,87 @@ def draw_landmarks(image, landmark_point):
 
     # Key Points
     for index, landmark in enumerate(landmark_point):
-        if index == 0:  # 手首1
+        if index == 0: 
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 1:  # 手首2
+        if index == 1:  
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 2:  # 親指：付け根
+        if index == 2:  
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 3:  # 親指：第1関節
+        if index == 3:  
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 4:  # 親指：指先
+        if index == 4:  
             cv.circle(image, (landmark[0], landmark[1]), 8, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 8, (0, 0, 0), 1)
-        if index == 5:  # 人差指：付け根
+        if index == 5:  
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 6:  # 人差指：第2関節
+        if index == 6:  
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 7:  # 人差指：第1関節
+        if index == 7:  
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 8:  # 人差指：指先
+        if index == 8:  
             cv.circle(image, (landmark[0], landmark[1]), 8, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 8, (0, 0, 0), 1)
-        if index == 9:  # 中指：付け根
+        if index == 9: 
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 10:  # 中指：第2関節
+        if index == 10:  
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 11:  # 中指：第1関節
+        if index == 11:  
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 12:  # 中指：指先
+        if index == 12: 
             cv.circle(image, (landmark[0], landmark[1]), 8, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 8, (0, 0, 0), 1)
-        if index == 13:  # 薬指：付け根
+        if index == 13: 
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 14:  # 薬指：第2関節
+        if index == 14: 
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 15:  # 薬指：第1関節
+        if index == 15: 
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 16:  # 薬指：指先
+        if index == 16: 
             cv.circle(image, (landmark[0], landmark[1]), 8, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 8, (0, 0, 0), 1)
-        if index == 17:  # 小指：付け根
+        if index == 17:  
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 18:  # 小指：第2関節
+        if index == 18:  
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 19:  # 小指：第1関節
+        if index == 19: 
             cv.circle(image, (landmark[0], landmark[1]), 5, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 5, (0, 0, 0), 1)
-        if index == 20:  # 小指：指先
+        if index == 20:  
             cv.circle(image, (landmark[0], landmark[1]), 8, (255, 255, 255),
                       -1)
             cv.circle(image, (landmark[0], landmark[1]), 8, (0, 0, 0), 1)
@@ -533,6 +509,8 @@ def draw_landmarks(image, landmark_point):
 
 
 def draw_bounding_rect(use_brect, image, brect):
+    # This function does the following:
+    # It draws the bounding box around the hand on the image.
     if use_brect:
         # Outer rectangle
         cv.rectangle(image, (brect[0], brect[1]), (brect[2], brect[3]),
@@ -541,8 +519,9 @@ def draw_bounding_rect(use_brect, image, brect):
     return image
 
 
-def draw_info_text(image, brect, handedness, hand_sign_text,
-                   finger_gesture_text):
+def draw_info_text(image, brect, handedness, hand_sign_text):
+    # This function does the following:
+    # It draws the text for the handedness and the hand sign on the image.
     cv.rectangle(image, (brect[0], brect[1]), (brect[2], brect[1] - 22),
                  (0, 0, 0), -1)
 
@@ -552,26 +531,12 @@ def draw_info_text(image, brect, handedness, hand_sign_text,
     cv.putText(image, info_text, (brect[0] + 5, brect[1] - 4),
                cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1, cv.LINE_AA)
 
-    if finger_gesture_text != "":
-        cv.putText(image, "Finger Gesture:" + finger_gesture_text, (10, 60),
-                   cv.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 4, cv.LINE_AA)
-        cv.putText(image, "Finger Gesture:" + finger_gesture_text, (10, 60),
-                   cv.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2,
-                   cv.LINE_AA)
-
-    return image
-
-
-def draw_point_history(image, point_history):
-    for index, point in enumerate(point_history):
-        if point[0] != 0 and point[1] != 0:
-            cv.circle(image, (point[0], point[1]), 1 + int(index / 2),
-                      (152, 251, 152), 2)
-
     return image
 
 
 def draw_info(image, fps, mode, number):
+    # This function does the following:
+    # It draws the text for the FPS and the mode on the image.
     cv.putText(image, "FPS:" + str(fps), (10, 30), cv.FONT_HERSHEY_SIMPLEX,
                1.0, (0, 0, 0), 4, cv.LINE_AA)
     cv.putText(image, "FPS:" + str(fps), (10, 30), cv.FONT_HERSHEY_SIMPLEX,
