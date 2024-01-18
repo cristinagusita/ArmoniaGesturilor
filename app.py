@@ -122,6 +122,9 @@ def main():
                 # Conversion to relative coordinates / normalized coordinates
                 pre_processed_landmark_list = pre_process_landmark(
                     landmark_list)
+                
+                # Write to the dataset file
+                logging_csv(number, mode, pre_processed_landmark_list)
 
                 # Hand sign classification
                 hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
@@ -165,67 +168,67 @@ def select_mode(key, mode):
 
 def play_key(hand_sign_id): 
     match hand_sign_id:
-        # case 0: 
-        #     pygame.mixer.music.load('c3.mp3')
-        #     pygame.mixer.music.play()
-        # case 1: 
-        #     pygame.mixer.music.load('d3.mp3')
-        #     pygame.mixer.music.play()
-        # case 2: 
-        #     pygame.mixer.music.load('e3.mp3')
-        #     pygame.mixer.music.play()
-        # case 3: 
-        #     pygame.mixer.music.load('f3.mp3')
-        #     pygame.mixer.music.play()
-        # case 4: 
-        #     pygame.mixer.music.load('g3.mp3')
-        #     pygame.mixer.music.play()
-        # case 5: 
-        #     pygame.mixer.music.load('a3.mp3')
-        #     pygame.mixer.music.play()
-        # case 6: 
-        #     pygame.mixer.music.load('b3.mp3')
-        #     pygame.mixer.music.play()
-        # case 7: 
-        #     pygame.mixer.music.load('c4.mp3')
-        #     pygame.mixer.music.play()
-        # case 8:
-        #     pygame.mixer.music.load('d4.mp3')
-        #     pygame.mixer.music.play()
-        # case 9:
-        #     pygame.mixer.music.load('e4.mp3')
-        #     pygame.mixer.music.play()
-
         case 0: 
-            pygame.mixer.music.load('./sounds/d3.mp3')
-            pygame.mixer.music.play()
-        case 1: 
-            pygame.mixer.music.load('./sounds/e3.mp3')
-            pygame.mixer.music.play()
-        case 2: 
-            pygame.mixer.music.load('./sounds/f3.mp3')
-            pygame.mixer.music.play()
-        case 3: 
-            pygame.mixer.music.load('./sounds/g3.mp3')
-            pygame.mixer.music.play()
-        case 4: 
-            pygame.mixer.music.load('./sounds/b3.mp3')
-            pygame.mixer.music.play()
-        case 5: 
-            pygame.mixer.music.load('./sounds/c4.mp3')
-            pygame.mixer.music.play()
-        case 6: 
-            pygame.mixer.music.load('./sounds/d4.mp3')
-            pygame.mixer.music.play()
-        case 7: 
-            pygame.mixer.music.load('./sounds/e4.mp3')
-            pygame.mixer.music.play()
-        case 8:
             pygame.mixer.music.load('./sounds/c3.mp3')
             pygame.mixer.music.play()
-        case 9:
+        case 1: 
+            pygame.mixer.music.load('./sounds/d3.mp3')
+            pygame.mixer.music.play()
+        case 2: 
+            pygame.mixer.music.load('./sounds/e3.mp3')
+            pygame.mixer.music.play()
+        case 3: 
+            pygame.mixer.music.load('./sounds/f3.mp3')
+            pygame.mixer.music.play()
+        case 4: 
+            pygame.mixer.music.load('./sounds/g3.mp3')
+            pygame.mixer.music.play()
+        case 5: 
             pygame.mixer.music.load('./sounds/a3.mp3')
             pygame.mixer.music.play()
+        case 6: 
+            pygame.mixer.music.load('./sounds/b3.mp3')
+            pygame.mixer.music.play()
+        case 7: 
+            pygame.mixer.music.load('./sounds/c4.mp3')
+            pygame.mixer.music.play()
+        case 8:
+            pygame.mixer.music.load('./sounds/d4.mp3')
+            pygame.mixer.music.play()
+        case 9:
+            pygame.mixer.music.load('./sounds/e4.mp3')
+            pygame.mixer.music.play()
+
+        # case 0: 
+        #     pygame.mixer.music.load('./sounds/d3.mp3')
+        #     pygame.mixer.music.play()
+        # case 1: 
+        #     pygame.mixer.music.load('./sounds/e3.mp3')
+        #     pygame.mixer.music.play()
+        # case 2: 
+        #     pygame.mixer.music.load('./sounds/f3.mp3')
+        #     pygame.mixer.music.play()
+        # case 3: 
+        #     pygame.mixer.music.load('./sounds/g3.mp3')
+        #     pygame.mixer.music.play()
+        # case 4: 
+        #     pygame.mixer.music.load('./sounds/b3.mp3')
+        #     pygame.mixer.music.play()
+        # case 5: 
+        #     pygame.mixer.music.load('./sounds/c4.mp3')
+        #     pygame.mixer.music.play()
+        # case 6: 
+        #     pygame.mixer.music.load('./sounds/d4.mp3')
+        #     pygame.mixer.music.play()
+        # case 7: 
+        #     pygame.mixer.music.load('./sounds/e4.mp3')
+        #     pygame.mixer.music.play()
+        # case 8:
+        #     pygame.mixer.music.load('./sounds/c3.mp3')
+        #     pygame.mixer.music.play()
+        # case 9:
+        #     pygame.mixer.music.load('./sounds/a3.mp3')
+        #     pygame.mixer.music.play()
 
 
 def calc_bounding_rect(image, landmarks):
