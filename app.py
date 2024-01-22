@@ -19,7 +19,9 @@ from threading import Thread
 import threading
 from time import sleep
 
-past_state = -1
+from google.protobuf.json_format import MessageToDict
+
+past_state = {'Left': -1, 'Right':-1}
 lock = threading.Lock()
 running_threads = {}
 
@@ -70,7 +72,7 @@ def main():
     hands = mp_hands.Hands(
         static_image_mode=True, 
         max_num_hands=2,
-        min_detection_confidence=0.5,
+        min_detection_confidence=0.6,
     )
 
     keypoint_classifier = KeyPointClassifier()
@@ -115,6 +117,8 @@ def main():
         if results.multi_hand_landmarks is not None:
             for hand_landmarks, handedness in zip(results.multi_hand_landmarks,
                                                   results.multi_handedness):
+                handedness_dict = MessageToDict(handedness)
+                current_hand = handedness_dict['classification'][0]['label']
                 brect = calc_bounding_rect(debug_image, hand_landmarks)
                 # Landmark calculation
                 landmark_list = calc_landmark_list(debug_image, hand_landmarks)
@@ -129,11 +133,11 @@ def main():
                 # Hand sign classification
                 hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
 
-                if hand_sign_id != past_state:
+                if hand_sign_id != past_state[current_hand]:
                     # In case the same finger is recognized for a certain period of time, it is recognized as a long press and is only played once.
                     thread = Thread(target=play_key, args=(hand_sign_id, ))
                     thread.start()
-                    past_state = hand_sign_id
+                    past_state[current_hand] = hand_sign_id
 
                 # Drawing part
                 debug_image = draw_bounding_rect(use_brect, debug_image, brect)
@@ -198,37 +202,6 @@ def play_key(hand_sign_id):
         case 9:
             pygame.mixer.music.load('./sounds/e4.mp3')
             pygame.mixer.music.play()
-
-        # case 0: 
-        #     pygame.mixer.music.load('./sounds/d3.mp3')
-        #     pygame.mixer.music.play()
-        # case 1: 
-        #     pygame.mixer.music.load('./sounds/e3.mp3')
-        #     pygame.mixer.music.play()
-        # case 2: 
-        #     pygame.mixer.music.load('./sounds/f3.mp3')
-        #     pygame.mixer.music.play()
-        # case 3: 
-        #     pygame.mixer.music.load('./sounds/g3.mp3')
-        #     pygame.mixer.music.play()
-        # case 4: 
-        #     pygame.mixer.music.load('./sounds/b3.mp3')
-        #     pygame.mixer.music.play()
-        # case 5: 
-        #     pygame.mixer.music.load('./sounds/c4.mp3')
-        #     pygame.mixer.music.play()
-        # case 6: 
-        #     pygame.mixer.music.load('./sounds/d4.mp3')
-        #     pygame.mixer.music.play()
-        # case 7: 
-        #     pygame.mixer.music.load('./sounds/e4.mp3')
-        #     pygame.mixer.music.play()
-        # case 8:
-        #     pygame.mixer.music.load('./sounds/c3.mp3')
-        #     pygame.mixer.music.play()
-        # case 9:
-        #     pygame.mixer.music.load('./sounds/a3.mp3')
-        #     pygame.mixer.music.play()
 
 
 def calc_bounding_rect(image, landmarks):
