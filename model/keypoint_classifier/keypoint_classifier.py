@@ -6,7 +6,7 @@ class KeyPointClassifier(object):
         self,
         model_path='model/keypoint_classifier/keypoint_classifier.tflite',
         num_threads=1,
-        threshold=0.6  # Default threshold set to 0.5. You can adjust this value.
+        threshold=0.95  # Default threshold set to 0.5
     ):
         self.interpreter = tf.lite.Interpreter(model_path=model_path,
                                                num_threads=num_threads)
