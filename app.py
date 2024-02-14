@@ -6,6 +6,7 @@ import argparse
 import itertools
 from collections import Counter
 from collections import deque
+import time
 
 import cv2 as cv
 import numpy as np
@@ -24,6 +25,14 @@ from google.protobuf.json_format import MessageToDict
 past_state = {'Left': -1, 'Right':-1}
 lock = threading.Lock()
 running_threads = {}
+
+pygame.mixer.init()
+pygame.mixer.set_num_channels(11)
+
+# for delay between sounds
+t1 = {'Left': 0, 'Right':0}
+t2 = {'Left': 0, 'Right':0}
+time_threshold = 0.1
 
 def get_args():
     pygame.init()
@@ -70,9 +79,10 @@ def main():
     # Model load #############################################################
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands(
-        static_image_mode=True, 
+        static_image_mode=False, 
         max_num_hands=2,
-        min_detection_confidence=0.6,
+        min_detection_confidence=0.9,
+        min_tracking_confidence=0.5,
     )
 
     keypoint_classifier = KeyPointClassifier()
@@ -123,21 +133,25 @@ def main():
                 # Landmark calculation
                 landmark_list = calc_landmark_list(debug_image, hand_landmarks)
 
+                # Write to dataset file
+
+                logging_csv(number, mode, landmark_list)
+
                 # Conversion to relative coordinates / normalized coordinates
                 pre_processed_landmark_list = pre_process_landmark(
                     landmark_list)
-                
-                # Write to the dataset file
-                logging_csv(number, mode, pre_processed_landmark_list)
+    
 
                 # Hand sign classification
                 hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
 
-                if hand_sign_id != past_state[current_hand]:
+                if hand_sign_id != past_state[current_hand] and hand_sign_id != 10:
                     # In case the same finger is recognized for a certain period of time, it is recognized as a long press and is only played once.
-                    thread = Thread(target=play_key, args=(hand_sign_id, ))
+                    thread = Thread(target=play_key, args=(hand_sign_id, current_hand))
                     thread.start()
-                    past_state[current_hand] = hand_sign_id
+               # if past_state[current_hand] > -1 and past_state[current_hand] != 10 and channels[past_state[current_hand]].get_busy():
+               #     channels[past_state[current_hand]].fadeout(3800) 
+                past_state[current_hand] = hand_sign_id
 
                 # Drawing part
                 debug_image = draw_bounding_rect(use_brect, debug_image, brect)
@@ -164,44 +178,37 @@ def select_mode(key, mode):
         number = key - 48
     if 65 <= key <= 90:
         number = key - 55
-    if key == 110:  # n - meutru, se intoarce la starea initiala
+    if key == 110:  # n - neutru, se intoarce la starea initiala
         mode = 0
     if key == 107:  # k - pentru antrenare key points
         mode = 1
     return number, mode
 
-def play_key(hand_sign_id): 
-    match hand_sign_id:
-        case 0: 
-            pygame.mixer.music.load('./sounds/c3.mp3')
-            pygame.mixer.music.play()
-        case 1: 
-            pygame.mixer.music.load('./sounds/d3.mp3')
-            pygame.mixer.music.play()
-        case 2: 
-            pygame.mixer.music.load('./sounds/e3.mp3')
-            pygame.mixer.music.play()
-        case 3: 
-            pygame.mixer.music.load('./sounds/f3.mp3')
-            pygame.mixer.music.play()
-        case 4: 
-            pygame.mixer.music.load('./sounds/g3.mp3')
-            pygame.mixer.music.play()
-        case 5: 
-            pygame.mixer.music.load('./sounds/a3.mp3')
-            pygame.mixer.music.play()
-        case 6: 
-            pygame.mixer.music.load('./sounds/b3.mp3')
-            pygame.mixer.music.play()
-        case 7: 
-            pygame.mixer.music.load('./sounds/c4.mp3')
-            pygame.mixer.music.play()
-        case 8:
-            pygame.mixer.music.load('./sounds/d4.mp3')
-            pygame.mixer.music.play()
-        case 9:
-            pygame.mixer.music.load('./sounds/e4.mp3')
-            pygame.mixer.music.play()
+sounds = {
+    0: pygame.mixer.Sound('./sounds/c3.mp3'),
+    1: pygame.mixer.Sound('./sounds/d3.mp3'),
+    2: pygame.mixer.Sound('./sounds/e3.mp3'),
+    3: pygame.mixer.Sound('./sounds/f3.mp3'),
+    4: pygame.mixer.Sound('./sounds/g3.mp3'),
+    5: pygame.mixer.Sound('./sounds/a3.mp3'),
+    6: pygame.mixer.Sound('./sounds/b3.mp3'),
+    7: pygame.mixer.Sound('./sounds/c4.mp3'),
+    8: pygame.mixer.Sound('./sounds/d4.mp3'),
+    9: pygame.mixer.Sound('./sounds/e4.mp3')
+}
+
+channels = {i : pygame.mixer.Channel(i) for i in range(len(sounds))}
+
+def play_key(hand_sign_id, hand): 
+    global t1,t2
+    t1[hand] = time.time()
+    sound = sounds.get(hand_sign_id)
+    channel = channels.get(hand_sign_id)
+    if t1[hand] - t2[hand] > time_threshold:
+        channel.play(sound)
+        t2[hand] = t1[hand] 
+    
+    
 
 
 def calc_bounding_rect(image, landmarks):
@@ -238,7 +245,6 @@ def calc_landmark_list(image, landmarks):
     for _, landmark in enumerate(landmarks.landmark):
         landmark_x = min(int(landmark.x * image_width), image_width - 1)
         landmark_y = min(int(landmark.y * image_height), image_height - 1)
-        # landmark_z = landmark.z
 
         landmark_point.append([landmark_x, landmark_y])
 
@@ -287,6 +293,7 @@ def logging_csv(number, mode, landmark_list):
         pass
     if mode == 1 and (0 <= number <= 35):
         csv_path = 'model/keypoint_classifier/keypoint.csv'
+        landmark_list = list(itertools.chain.from_iterable(landmark_list))
         with open(csv_path, 'a', newline="") as f:
             writer = csv.writer(f)
             writer.writerow([number, *landmark_list])
