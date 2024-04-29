@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login | Armonia Gesturilor</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #FAFAFA;
+            color: #333;
+            line-height: 1.6;
+        }
+        .app-title {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: #1E88E5;
+            color: white;
+            font-size: 28px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .navbar {
+            background-color: white;
+            overflow: hidden;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+        }
+        .navbar a {
+            color: #555;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        .navbar a:hover, .navbar a:focus {
+            background-color: #1E88E5;
+            color: white;
+        }
+        .container {
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        h1 {
+            margin-bottom: 20px;
+            color: #1E88E5;
+            font-size: 24px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input[type="text"], input[type="password"], button {
+            width: 90%;
+            padding: 12px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button, .link-button {
+            background-color: #1E88E5;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 16px;
+            text-decoration: none;
+            padding: 12px;
+            display: inline-block;
+            margin: 8px 0;
+            width: 90%;
+        }
+        button:hover, .link-button:hover {
+            background-color: #1565C0;
+        }
+        .link-button {
+            background-color: #FF7043; /* Different color for register button */
+            font-size: 14px; /* Smaller font size */
+            width: auto; /* Only as wide as necessary */
+            padding: 8px 12px; /* Smaller padding */
+        }
+        .link-button:hover {
+            background-color: #FF5722; /* Darker shade for hover effect */
+        }
+        .message {
+            text-align: center;
+            margin: 10px auto;
+            font-size: 16px;
+            width: 90%;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #C8E6C9;
+            color: #256029;
+        }
+        .error {
+            background-color: #FFCDD2;
+            color: #C63737;
+        }
+        @media (max-width: 768px) {
+            .navbar a, .app-title {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+            .app-title {
+                font-size: 20px;
+            }
+            .container {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app-title">Armonia Gesturilor</div>
+<div class="navbar">
+    <a href="/home">Acasă</a>
+    <a href="/discover">Descoperă</a>
+    <a href="/play">Cântă</a>
+    <a href="/profile">Profilul meu</a>
+</div>
+<div class="container">
+    <h1>Login</h1>
+    <div th:if="${errorMessage != null && !errorMessage.isEmpty()}" th:text="${errorMessage}" class="message error"></div>
+    <form th:action="@{/api/v1/login}" method="post">
+        <input type="text" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Sign In</button>
+        <a href="/registration" class="link-button">No account? Register here</a>
+    </form>
+</div>
+</body>
+</html>

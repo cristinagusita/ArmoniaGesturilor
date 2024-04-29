@@ -1,0 +1,13 @@
+package upt.licenta.cristinagusita.armoniagesturilor;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class ArmoniagesturilorApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ArmoniagesturilorApplication.class, args);
+	}
+
+}

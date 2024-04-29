@@ -1,0 +1,113 @@
+body {
+    font-family: 'Roboto', sans-serif; /* More modern font */
+    margin: 0;
+    padding: 0;
+    background-color: #FAFAFA;
+    color: #333;
+    line-height: 1.6;
+}
+.app-title {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #1E88E5; /* Updated color */
+    color: white;
+    font-size: 28px; /* Slightly smaller for better responsiveness */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+.navbar {
+    background-color: white;
+    overflow: hidden;
+    position: sticky;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+}
+.navbar a, .logout-button {
+    color: #555;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 16px; /* Smaller font size for cleaner look */
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+.navbar a:hover, .navbar a:focus, .logout-button:hover {
+    background-color: #1E88E5; /* Consistent with app title color */
+    color: white;
+}
+.logout-button {
+    background-color: transparent; /* Transparent to fit with other nav items */
+    border: none; /* No border for a button-like feel */
+    cursor: pointer;
+}
+.logout-button:hover {
+    background-color: #E53935; /* Red color for logout to indicate action */
+}
+.container {
+    padding: 20px;
+    margin-top: 20px;
+    text-align: center;
+    background-color: white;
+    border-radius: 8px; /* More modern border radius */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    max-width: 800px; /* Max width for better reading on large screens */
+    margin-left: auto; /* Center container */
+    margin-right: auto;
+}
+
+h1 {
+    margin-bottom: 20px; /* Reduced margin */
+    color: #1E88E5; /* Consistent color scheme */
+    font-size: 24px; /* More appropriate size */
+}
+form {
+    margin-top: 20px;
+}
+input[type=submit] {
+    background-color: #1E88E5; /* Consistent button color */
+    color: white;
+    padding: 12px 24px; /* Adjusted padding for better ergonomics */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 16px; /* Adjusted font size */
+}
+input[type=submit]:hover {
+    background-color: #1565C0; /* Slightly darker on hover */
+}
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+    .navbar a {
+        padding: 10px 12px;
+    }
+    .app-title {
+        padding: 30px 10px;
+        font-size: 24px;
+    }
+}
+
+#video, #canvas {
+    border-radius: 20px;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #2196F3; /* Blue background for emphasis */
+    color: white; /* White text for visibility */
+    text-decoration: none; /* No underline */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth transition for hover effect */
+    font-size: 16px; /* Consistent font size */
+    text-align: center;
+    border: none; /* No border */
+    cursor: pointer; /* Indicates clickable */
+}
+
+.button:hover {
+    background-color: #1976D2; /* Slightly darker blue on hover */
+}

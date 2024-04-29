@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Confirm Registration | Armonia Gesturilor</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: 'Roboto', sans-serif; background-color: #FAFAFA; color: #333; line-height: 1.6; }
+        .app-title { text-align: center; padding: 40px; background-color: #1E88E5; color: white; font-size: 28px; }
+        .navbar { background-color: white; overflow: hidden; position: sticky; top: 0; width: 100%; display: flex; justify-content: space-around; }
+        .navbar a { color: #555; text-align: center; padding: 14px 16px; text-decoration: none; font-size: 16px; border-radius: 5px; }
+        .container { padding: 20px; margin-top: 20px; text-align: center; background-color: white; border-radius: 8px; max-width: 800px; margin-left: auto; margin-right: auto; }
+        .message { text-align: center; margin: 10px auto; font-size: 16px; width: 90%; padding: 10px; border-radius: 5px; }
+        .success { background-color: #C8E6C9; color: #256029; }
+        .error { background-color: #FFCDD2; color: #C63737; }
+        @media (max-width: 768px) { .navbar a, .app-title { padding: 10px 12px; font-size: 14px; } .app-title { font-size: 20px; } .container { width: 95%; } }
+    </style>
+</head>
+<body>
+<div class="app-title">Armonia Gesturilor</div>
+<div class="navbar">
+    <a href="/home">Acasă</a>
+    <a href="/discover">Descoperă</a>
+    <a href="/play">Cântă</a>
+    <a href="/profile">Profilul meu</a>
+</div>
+<div class="container">
+    <h1>Confirm Registration</h1>
+    <div th:if="${successMessage != null}" th:text="${successMessage}" class="message success"></div>
+    <div th:if="${errorMessage != null}" th:text="${errorMessage}" class="message error"></div>
+</div>
+</body>
+</html>
