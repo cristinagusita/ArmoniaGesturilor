@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <title>Armonia Gesturilor</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <style>
+        h1, h2 {
+            color: #1E88E5;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+        input[type=submit], button {
+            background-color: #1E88E5;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 18px;
+            margin: 5px;
+        }
+        input[type=submit]:hover, button:hover {
+            background-color: #1565C0;
+        }
+        @media (max-width: 768px) {
+            .navbar a, .app-title, input[type=submit], button {
+                padding: 10px;
+                font-size: 16px;
+            }
+            .app-title {
+                padding: 30px 10px;
+                font-size: 24px;
+            }
+        }
+        #video, #canvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        /* Overlay styles */
+        #achievement-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        #achievement-screen {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            margin: auto;
+            padding: 30px;
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            font-family: 'Roboto', sans-serif;
+            animation: scaleUp 0.3s;
+        }
+
+        @keyframes scaleUp {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .achievement-name {
+            display: block;
+            font-size: 1.5em;
+            color: #1E88E5;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .close-button {
+            font-size: 1em;
+            padding: 10px 20px;
+            background-color: #1E88E5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .close-button:hover {
+            background-color: #1565C0;
+        }
+
+    </style>
+</head>
+<body>
+<div id="userData" th:data-username="${username}" style="display:none;"></div>
+<div class="app-title">Armonia Gesturilor</div>
+<div class="navbar">
+    <a href="/home">Acasă</a>
+    <a href="/descopera">Descoperă</a>
+    <a href="/canta">Cântă</a>
+    <a href="/profile">Profilul meu</a>
+    <button class="logout-button" onclick="location.href='/logout'" type="button">Logout</button>
+</div>
+<div id="achievement-overlay">
+    <div id="achievement-screen">
+        Congratulations! You've unlocked a new achievement:
+        <span class="achievement-name"></span>
+        <button class="close-button" onclick="hideAchievementScreen()">Close</button>
+    </div>
+</div>
+
+
+
+<div class="container">
+    <span th:if="${#authorization.expression('isAuthenticated()')}">
+        Hello, <span th:text="${#authentication.principal.firstName}">User</span>!
+    </span>
+    <span th:unless="${#authorization.expression('isAuthenticated()')}">
+        Hello, Guest!
+    </span>
+
+    <div th:if="${#authorization.expression('isAuthenticated()')}">
+        <input type="submit" id="recordButton" value="Record"/>
+        <input type="submit" id="resumeButton" value="Resume Recording" style="display:none;"/>
+        <input type="submit" id="saveButton" value="Save" style="display:none;"/>
+    </div>
+    <div th:unless="${#authorization.expression('isAuthenticated()')}">
+        <button onclick="location.href='/login'">Record</button>
+    </div>
+</div>
+<div class="container">
+    <h2>MediaPipe Hands Example</h2>
+    <video id="video" width="640" height="480" autoplay style="display: none;"></video>
+    <canvas id="canvas" width="640" height="480"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+<script src="model.js"></script>
+<script>
+    function checkAchievements(username) {
+        fetch(`/achievements/check/${username}`)
+            .then(response => response.text())
+            .then(achievementName => {
+                if (achievementName !== "None") {
+                    showAchievementScreen(achievementName);
+                }
+            })
+            .catch(error => console.error('Error checking achievements:', error));
+    }
+
+    function showAchievementScreen(achievementName) {
+        const achievementOverlay = document.getElementById('achievement-overlay');
+        const achievementNameSpan = document.querySelector('.achievement-name');
+        achievementNameSpan.textContent = achievementName;
+        achievementOverlay.style.display = 'flex'; // Show the overlay
+
+        // Automatically hide the screen after 5 seconds
+        //setTimeout(() => {
+        //   achievementOverlay.style.display = 'none';
+        //}, 5000);
+    }
+
+    function hideAchievementScreen() {
+        const achievementOverlay = document.getElementById('achievement-overlay');
+        achievementOverlay.style.display = 'none';
+    }
+
+
+    // JavaScript to toggle button text between "Record" and "Stop Recording", and change colors
+    document.getElementById('recordButton').addEventListener('click', function() {
+        // Start recording
+        recordedChunks = [];
+        mediaRecorder.start();
+        this.style.display = 'none'; // Hide the Record button
+        document.getElementById('resumeButton').style.display = 'inline'; // Initially, show only the Resume button
+        document.getElementById('saveButton').style.display = 'inline'; // Show the Save button alongside
+        document.getElementById('resumeButton').value = "Pause"; // Change Resume button text to "Pause"
+    });
+
+    document.getElementById('resumeButton').addEventListener('click', function() {
+        var resumeButton = this;
+        if (resumeButton.value === "Pause") {
+            // Pause recording
+            mediaRecorder.pause();
+            resumeButton.value = "Resume Recording"; // Change button text to "Resume Recording"
+        } else {
+            // Resume recording
+            mediaRecorder.resume();
+            resumeButton.value = "Pause"; // Change button text back to "Pause"
+        }
+    });
+
+    document.getElementById('saveButton').addEventListener('click', function() {
+        // Stop recording and save
+        mediaRecorder.stop();
+        // Reset the UI
+        document.getElementById('recordButton').style.display = 'inline'; // Show the Record button again
+        document.getElementById('resumeButton').style.display = 'none'; // Hide the Resume button
+        this.style.display = 'none'; // Hide the Save button
+    });
+
+
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    const destination = audioContext.createMediaStreamDestination();
+
+    let mediaRecorder = new MediaRecorder(destination.stream);
+    let recordedChunks = [];
+
+    mediaRecorder.ondataavailable = function(event) {
+        if (event.data.size > 0) {
+            recordedChunks.push(event.data);
+        }
+    }
+
+    mediaRecorder.onstop = async function() {
+        const audioBlob = new Blob(recordedChunks, {type: 'audio/webm'});
+
+        let fileName = prompt("Please enter a name for your audio file:", "My Recording");
+        if (fileName === null) {
+            // User pressed the Cancel button, do not save the recording
+            alert('Upload canceled');
+            return;
+        }
+
+        if (!fileName) {
+            fileName = "recorded_audio"; // default name if the user entered nothing
+        }
+
+        // FormData to send to the server
+        const formData = new FormData();
+        formData.append('file', audioBlob, fileName);
+
+        // fetch API to upload the file
+        try {
+            const response = await fetch('/uploadSong', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) throw new Error('Network response was not ok');
+            const result = await response.text();
+            console.log(result);
+            alert('Upload successful');
+            var userDataDiv = document.getElementById('userData');
+            var username = userDataDiv.getAttribute('data-username');
+            console.log(username);
+            checkAchievements(username);
+        } catch (error) {
+            console.error('Error uploading the file:', error);
+            alert('Upload failed');
+        }
+    };
+
+
+</script>
+</body>
+</html>
