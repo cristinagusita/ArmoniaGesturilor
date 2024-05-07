@@ -1,0 +1,77 @@
+.profile-container{
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+.app-title, .navbar{
+    position: fixed;
+    width:100%;
+
+}
+
+.navbar{
+    top: 124.8px;
+}
+
+.profile-container{
+    position: fixed;
+    top: calc(124.8px + 53.6px);
+}
+
+.container{
+    overflow:auto;
+}
+
+.badge-container{
+    width: 100% !important;
+}
+
+.badges{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.badge-line{
+    display: flex;
+}
+
+.badge img{
+    display: block;
+    width: 100px;
+    height: 100px;
+}
+
+.badge{
+    margin: 10px;
+    width: 100px;
+}
+
+.container{
+    width: 100%;
+    height: calc(100% - 255px);
+    margin-right:unset !important;
+    margin-left:unset !important;
+}
+.badge-container{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 50px;
+
+}
+.badge-header > span{
+    font-size: 22px;
+}
+.badge-header > span:after{
+    content: "";
+    width: calc(100% + 50px);
+    margin-left: -25px;
+    height: 2px;
+    background: #00639A;
+    display: block;
+}
+
