@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <title>Armonia Gesturilor</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <style>
+        .song-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .song-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+        /*button {*/
+        /*    margin-top: 10px;
+        /*}*/
+
+        .like-button {
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            border: none;
+            transition: background-color 0.3s;
+            background-color: #4CAF50;
+            color: white;
+        }
+        .like {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .like:hover {
+            background-color: #45a049;
+        }
+        .dislike {
+            background-color: #f44336;
+            color: white;
+        }
+        .dislike:hover {
+            background-color: #d32f2f;
+        }
+        .like-count {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+        .download-button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: #2196F3;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-size: 16px;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+        .download-button:hover {
+            background-color: #1976D2;
+        }
+
+        audio {
+            width: 100%;
+            margin-top: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        audio::-webkit-media-controls-panel {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        audio::-webkit-media-controls-play-button,
+        audio::-webkit-media-controls-volume-slider,
+        audio::-webkit-media-controls-mute-button,
+        audio::-webkit-media-controls-timeline {
+            color: #1E88E5;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="app-title">Armonia Gesturilor</div>
+<div class="navbar">
+    <a href="/home">Acasă</a>
+    <a href="/descopera">Descoperă</a>
+    <a href="/canta">Cântă</a>
+    <a href="/profile">Profilul meu</a>
+    <button th:if="${#authorization.expression('isAuthenticated()')}" class="logout-button" onclick="location.href='/logout'" type="button">Logout</button>
+</div>
+<div class="container">
+    <div th:each="song : ${songs}" class="song-item">
+        <h2 th:text="${song.fileName}">Song Name Placeholder</h2>
+        <audio controls controlsList="nodownload" preload="auto">
+            <source th:src="@{'/songs/data/' + ${song.id}}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        <!--        <div class="menu">-->
+<!--            <button onclick="toggleVisibility(${song.id})">Make Private</button>-->
+<!--        </div>-->
+
+        <!-- Like/Dislike button -->
+        <!-- if user is authenticated, make it normal button. If not, make the button redirect to /login when pressed -->
+        <div th:if="${#authorization.expression('isAuthenticated()')}">
+            <a th:href="@{'/songs/data/' + ${song.id}}" th:attr="download=@{${song.fileName} + '.mp3'}" class="download-button">Download</a>
+            <button th:class="'like-button ' + (${song.likedByUsers.contains(#authentication.principal.username) ? 'dislike' : 'like'})"
+                    th:onclick="'toggleLike(' + ${song.id} + ', ' + ${song.likedByUsers.contains(#authentication.principal.username)} + ');'"
+                    th:id="${'like-btn-' + song.id}" th:text="${song.likedByUsers.contains(#authentication.principal.username) ? 'Dislike' : 'Like'}"
+                    th:attr="data-song-id=${song.id}">
+                Like
+            </button>
+            <!-- Like count -->
+            <span class="like-count
+            " th:id="${'like-count-' + song.id}" th:text="${#lists.size(song.likedByUsers)} + ' Likes'">0 Likes</span>
+        </div>
+        <div th:unless="${#authorization.expression('isAuthenticated()')}">
+            <a th:href="@{'/songs/data/' + ${song.id}}" th:attr="download=@{${song.fileName} + '.mp3'}" class="download-button">Download</a>
+            <button th:class="'like-button '" onclick="location.href='/login'">Like</button>
+            <span class="like-count
+            " th:id="${'like-count-' + song.id}" th:text="${#lists.size(song.likedByUsers)} + ' Likes'">0 Likes</span>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const songs = document.querySelectorAll('.song-item');
+        songs.forEach((song) => {
+            const likeButton = song.querySelector('button.like-button');
+            const songId = likeButton.getAttribute('data-song-id');
+            if (songId === null) {
+                return;
+            }
+            const url = `/songs/checkLike/${songId}`;
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'credentials': 'include',
+                },
+            })
+                .then(response => response.json())
+                .then(isLiked => {
+                    updateButton(likeButton, songId, isLiked);
+                })
+                .catch(error => {
+                    console.error('Error checking like status:', error);
+                });
+        });
+    });
+
+    function updateButton(button, songId, isLiked) {
+        if (isLiked) {
+            button.textContent = 'Dislike';
+            button.className = 'like-button dislike';
+            button.onclick = () => toggleLike(songId, true);
+        } else {
+            button.textContent = 'Like';
+            button.className = 'like-button like';
+            button.onclick = () => toggleLike(songId, false);
+        }
+    }
+
+    function toggleLike(songId, isLiked) {
+        const url = isLiked ? `/songs/dislike/${songId}` : `/songs/like/${songId}`;
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'credentials': 'include',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                const likeButton = document.getElementById(`like-btn-${songId}`);
+                const likeCountElement = document.getElementById(`like-count-${songId}`);
+                if (likeButton && likeCountElement) {
+                    updateButton(likeButton, songId, !isLiked);
+                    likeCountElement.textContent = `${data} Likes`;
+                }
+            })
+            .catch(error => {
+                console.error('Error toggling the like status:', error);
+            });
+    }
+
+    function toggleVisibility(songId) {
+        fetch(`/songs/toggle/${songId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Song visibility changed.');
+                    window.location.reload(); // Reload the page to update the song list
+                } else {
+                    alert('Failed to change song visibility.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+</script>
+</body>
+</html>
