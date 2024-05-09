@@ -13,6 +13,8 @@ import upt.licenta.cristinagusita.armoniagesturilor.appuser.AppUserService;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Optional;
 
 @RestController
@@ -34,6 +36,7 @@ public class SongController {
             song.setFileName(file.getOriginalFilename());
             song.setContentType(file.getContentType());
             song.setData(file.getBytes());
+            song.setDateCreated(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
 
             song.setIsPublic(false);
             //songService.addSong(song, user);
@@ -49,7 +52,6 @@ public class SongController {
     @GetMapping("/songs/data/{songId}")
     @Transactional
     public ResponseEntity<byte[]> getSongData(@PathVariable Long songId, Principal principal) {
-        // Assuming songService can fetch songs by id
         Optional<Song> songOpt = songService.findById(songId);
 
 //        AppUser user = (AppUser) userService.loadUserByUsername(principal.getName());
@@ -71,19 +73,15 @@ public class SongController {
             byte[] data = song.getData();
             HttpHeaders headers = new HttpHeaders();
 
-            // Set the appropriate content type for the audio file
-            // You may need to adjust this based on the actual content type of your audio files
             headers.setContentType(MediaType.parseMediaType(song.getContentType()));
 
             return new ResponseEntity<>(data, headers, HttpStatus.OK);
         }
-        // Return not found status if the song doesn't exist
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/songs/data/discover/{songId}")
     public ResponseEntity<byte[]> getSongDataDiscover(@PathVariable Long songId, Principal principal) {
-        // Assuming songService can fetch songs by id
         Optional<Song> songOpt = songService.findById(songId);
 
         if (songOpt.isPresent()) {
@@ -96,16 +94,12 @@ public class SongController {
             byte[] data = song.getData();
             HttpHeaders headers = new HttpHeaders();
 
-            // Set the appropriate content type for the audio file
-            // You may need to adjust this based on the actual content type of your audio files
             headers.setContentType(MediaType.parseMediaType(song.getContentType()));
 
-            // Ensure browser plays the audio instead of downloading it
             headers.setContentDispositionFormData("filename", song.getFileName());
 
             return new ResponseEntity<>(data, headers, HttpStatus.OK);
         }
-        // Return not found status if the song doesn't exist
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 

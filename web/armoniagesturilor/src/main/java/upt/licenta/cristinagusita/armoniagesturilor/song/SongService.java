@@ -29,28 +29,6 @@ public class SongService {
         this.appUserRepository = appUserRepository;
     }
 
-//    @Transactional
-//    public Song addSong(Song song, Principal principal) {
-//        String username = principal.getName();
-//        AppUser user = appUserRepository.findAppUserByEmail(username)
-//                .orElseThrow(() -> new RuntimeException("User not found"));
-//        song.setUser(user);
-//        Song savedSong = songRepository.save(song);
-//        user.getSongs().add(savedSong);
-//        appUserRepository.save(user);
-//        achievementService.checkAndAssignAchievements(user);
-//        return savedSong;
-//    }
-
-//    @Transactional
-//    public Song addSong(Song song, AppUser user) {
-//        song.setUser(user);  // Set the user to the song
-//        Song savedSong = songRepository.save(song);
-//        user.getSongs().add(savedSong);
-//        appUserRepository.save(user);
-//        achievementService.checkAndAssignAchievements(user);
-//        return savedSong;
-//    }
     @Transactional
     public Song save(Song song) {
         return songRepository.save(song);
@@ -74,27 +52,6 @@ public class SongService {
         return songs;
     }
 
-   // @Transactional
-//    public void deleteSong(Long id) {
-//        songRepository.deleteById(id);
-//    }
-//    public ResponseEntity<?> deleteSong(Long id, Principal principal) {
-//        return songRepository.findById(id).map(song -> {
-//            // Assuming the principal's name is the username/email which can uniquely identify a user
-//            String username = principal.getName();
-//            Optional<AppUser> userOpt = appUserRepository.findAppUserByEmail(username);
-//
-//            AppUser user = userOpt.orElseThrow(() -> new RuntimeException("User not found"));
-//
-//            // Check if the song belongs to the user
-//            if (!song.getUser().equals(user)) {
-//                return ResponseEntity.badRequest().body("Song does not belong to user");
-//            } else {
-//                songRepository.deleteById(id);
-//                return ResponseEntity.ok().build();
-//            }
-//        }).orElse(ResponseEntity.notFound().build());
-//    }
 
     @Transactional
     public ResponseEntity<?> deleteSong(Long id, Principal principal) {
@@ -103,6 +60,8 @@ public class SongService {
             Song song = songOpt.get();
             String username = principal.getName();
             if (song.getUser().getEmail().equals(username)) {
+                // go through the user whose song was deleted and remove achievements if conditions are no longer met
+                achievementService.updateAchievementStatus(song.getUser());
                 songRepository.deleteById(id);
                 return ResponseEntity.ok().build();
             } else {
@@ -113,9 +72,6 @@ public class SongService {
     }
 
     @Transactional
-
-
-
     public ResponseEntity<?> toggleSongVisibility(@PathVariable Long id) {
         return songRepository.findById(id).map(song -> {
             song.togglePublicPrivate();
@@ -127,22 +83,17 @@ public class SongService {
     @Transactional
     public ResponseEntity<?> likeSong(Long id, Principal principal) {
         return songRepository.findById(id).map(song -> {
-            // Assuming the principal's name is the username/email which can uniquely identify a user
             String username = principal.getName();
             Optional<AppUser> userOpt = appUserRepository.findAppUserByEmail(username);
 
             AppUser user = userOpt.orElseThrow(() -> new RuntimeException("User not found"));
 
-            // Check if the user has already liked the song
             if (song.getLikedByUsers().contains(user)) {
-                // User has already liked the song, do not increase the like count
                 return ResponseEntity.badRequest().body("User has already liked this song");
             } else {
-                // Add the user to the set of users who have liked the song
                 song.getLikedByUsers().add(user);
                 songRepository.save(song);
 
-                // Return the updated like count or any other relevant information
                 return ResponseEntity.ok(song.getLikedByUsers().size());
             }
         }).orElse(ResponseEntity.notFound().build());
@@ -151,22 +102,17 @@ public class SongService {
     @Transactional
     public ResponseEntity<?> dislikeSong(Long id, Principal principal) {
         return songRepository.findById(id).map(song -> {
-            // Assuming the principal's name is the username/email which can uniquely identify a user
             String username = principal.getName();
             Optional<AppUser> userOpt = appUserRepository.findAppUserByEmail(username);
 
             AppUser user = userOpt.orElseThrow(() -> new RuntimeException("User not found"));
 
-            // Check if the user has already liked the song
             if (!song.getLikedByUsers().contains(user)) {
-                // User has not liked the song, do not decrease the like count
                 return ResponseEntity.badRequest().body("User has not liked this song");
             } else {
-                // Remove the user from the set of users who have liked the song
                 song.getLikedByUsers().remove(user);
                 songRepository.save(song);
 
-                // Return the updated like count or any other relevant information
                 return ResponseEntity.ok(song.getLikedByUsers().size());
             }
         }).orElse(ResponseEntity.notFound().build());
@@ -174,13 +120,11 @@ public class SongService {
 
     public ResponseEntity<?> checkIfLiked(Long id, Principal principal) {
         return songRepository.findById(id).map(song -> {
-            // Assuming the principal's name is the username/email which can uniquely identify a user
             String username = principal.getName();
             Optional<AppUser> userOpt = appUserRepository.findAppUserByEmail(username);
 
             AppUser user = userOpt.orElseThrow(() -> new RuntimeException("User not found"));
 
-            // Check if the user has already liked the song
             if (song.getLikedByUsers().contains(user)) {
                 return ResponseEntity.ok(true);
             } else {
@@ -194,14 +138,24 @@ public class SongService {
     }
 
     @Transactional
-    public void deleteSongAdmin(Long songId) {
-        songRepository.deleteById(songId);
+    public ResponseEntity<?> deleteSongAdmin(Long songId) {
+        try {
+            Optional<Song> song = songRepository.findById(songId);
+            if (!song.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Song not found");
+            }
+            // go through the user whose song was deleted and remove achievements if conditions are no longer met
+            achievementService.updateAchievementStatus(song.get().getUser());
+            songRepository.deleteById(songId);
+            return ResponseEntity.ok("Song deleted successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting song: " + e.getMessage());
+        }
     }
+
 
     @Transactional
     public void deleteLikesByUserId(Long userId) {
-        // delete all the likes to songs given by user with id
-        // go through the likedByUsers set of each song and remove the user with id
         List<Song> songs = songRepository.findAll();
         for (Song song : songs) {
             song.getLikedByUsers().removeIf(user -> user.getId().equals(userId));

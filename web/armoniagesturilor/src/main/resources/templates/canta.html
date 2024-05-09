@@ -116,7 +116,7 @@
     <a href="/descopera">Descoperă</a>
     <a href="/canta">Cântă</a>
     <a href="/profile">Profilul meu</a>
-    <button class="logout-button" onclick="location.href='/logout'" type="button">Logout</button>
+    <button th:if="${#authorization.expression('isAuthenticated()')}" class="logout-button" onclick="location.href='/logout'" type="button">Logout</button>
 </div>
 <div id="achievement-overlay">
     <div id="achievement-screen">

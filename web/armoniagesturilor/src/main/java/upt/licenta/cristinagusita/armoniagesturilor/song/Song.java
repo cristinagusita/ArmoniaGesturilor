@@ -17,12 +17,14 @@ public class Song {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private AppUser user;
 
     private String fileName;
     private String contentType;
+
+    private String dateCreated;
 
     private Boolean isPublic;
 
@@ -41,17 +43,14 @@ public class Song {
         this.isPublic = !this.isPublic;
     }
 
-    // Convenience method to add a like
     public void addLike(AppUser user) {
         this.likedByUsers.add(user);
     }
 
-    // Convenience method to remove a like
     public void removeLike(AppUser user) {
         this.likedByUsers.remove(user);
     }
 
-    // Method to get the number of likes
     public int getLikesCount() {
         return this.likedByUsers.size();
     }
