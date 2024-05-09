@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import upt.licenta.cristinagusita.armoniagesturilor.registration.RegistrationRequest;
 
@@ -36,6 +37,28 @@ public class RegistrationWebController {
             model.addAttribute("errorMessage", e.getMessage());
         }
         return "register";
+    }
+
+    @GetMapping(path = "/registration/confirm")
+    public String confirmRegistration(@RequestParam("token") String token, Model model) {
+        try {
+            String message = registrationService.confirmToken(token);
+            model.addAttribute("successMessage", message);
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+        }
+        return "confirm";
+    }
+
+    @GetMapping(path = "/update-email/confirm")
+    public String confirmEmailUpdate(@RequestParam("token") String token, Model model) {
+        try {
+            String message = registrationService.confirmUpdateToken(token);
+            model.addAttribute("successMessage", "Email updated successfully. Please log in with your new email. " + message);
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", e.getMessage());
+        }
+        return "email-update-confirm";
     }
 
 }

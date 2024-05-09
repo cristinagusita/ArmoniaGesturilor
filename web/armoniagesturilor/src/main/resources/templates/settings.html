@@ -79,11 +79,11 @@
         }
 
         .error-message {
-            background-color: #d32f2f; /* red */
+            background-color: #d32f2f;
         }
 
         .success-message {
-            background-color: #388e3c; /* green */
+            background-color: #388e3c;
         }
 
     </style>
@@ -91,20 +91,20 @@
 <body>
 <div class="app-title">Settings - Armonia Gesturilor</div>
 <div class="navbar">
-    <a href="/hello">Home</a>
-    <a href="/descopera">Discover</a>
-    <a href="/canta">Sing</a>
-    <a href="/profile">My Profile</a>
+    <a href="/home">Acasă</a>
+    <a href="/descopera">Descoperă</a>
+    <a href="/canta">Cântă</a>
+    <a href="/profile">Profilul meu</a>
 </div>
 <div class="container">
-    <h1>Account Settings</h1>
+    <h1>Setările contului</h1>
     <form th:action="@{/settings}" th:object="${user}" method="post">
         <div>
-            <label for="firstName">First Name:</label>
+            <label for="firstName">Prenume:</label>
             <input type="text" id="firstName" th:field="*{firstName}" required />
         </div>
         <div>
-            <label for="lastName">Last Name:</label>
+            <label for="lastName">Nume:</label>
             <input type="text" id="lastName" th:field="*{lastName}" required />
         </div>
         <div>
@@ -112,29 +112,29 @@
             <input type="email" id="email" th:field="*{email}" required />
         </div>
         <div>
-            <input type="submit" value="Update Settings" />
+            <input type="submit" value="Actualizează informațiile" />
         </div>
     </form>
 
-    <h2>Change Password</h2>
+    <h2>Schimbă parola</h2>
     <div th:if="${error}" class="error-message" th:text="${error}"></div>
     <div th:if="${success}" class="success-message" th:text="${success}"></div>
 
     <form th:action="@{/settings/change-password}" method="post">
         <div>
-            <label for="currentPassword">Current Password:</label>
+            <label for="currentPassword">Parola curentă:</label>
             <input type="password" id="currentPassword" name="currentPassword" required>
         </div>
         <div>
-            <label for="newPassword">New Password:</label>
+            <label for="newPassword">Parola nouă:</label>
             <input type="password" id="newPassword" name="newPassword" required>
         </div>
         <div>
-            <label for="confirmNewPassword">Confirm New Password:</label>
+            <label for="confirmNewPassword">Confirmă parola nouă:</label>
             <input type="password" id="confirmNewPassword" name="confirmNewPassword" required>
         </div>
         <div>
-            <input type="submit" value="Change Password" />
+            <input type="submit" value="Schimbă parola" />
         </div>
 
     </form>

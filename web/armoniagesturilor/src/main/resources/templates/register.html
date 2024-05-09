@@ -63,7 +63,7 @@
         form {
             margin-top: 20px;
         }
-        input[type=text], input[type=password], input[type=email], button {
+        input[type="text"], input[type="password"], input[type="email"], button {
             width: 90%;
             padding: 12px;
             margin: 8px 0;
@@ -72,7 +72,7 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
-        button {
+        button, .link-button {
             background-color: #1E88E5;
             color: white;
             border: none;
@@ -80,9 +80,23 @@
             cursor: pointer;
             transition: background-color 0.2s;
             font-size: 16px;
+            text-decoration: none;
+            padding: 12px;
+            display: inline-block;
+            margin: 8px 0;
+            width: 90%;
         }
-        button:hover {
+        button:hover, .link-button:hover {
             background-color: #1565C0;
+        }
+        .link-button {
+            background-color: #FF7043;
+            font-size: 14px;
+            width: auto;
+            padding: 8px 12px;
+        }
+        .link-button:hover {
+            background-color: #FF5722;
         }
         .message {
             text-align: center;
@@ -118,20 +132,21 @@
 <div class="app-title">Armonia Gesturilor</div>
 <div class="navbar">
     <a href="/home">Acasă</a>
-    <a href="/discover">Descoperă</a>
-    <a href="/play">Cântă</a>
+    <a href="/descopera">Descoperă</a>
+    <a href="/canta">Cântă</a>
     <a href="/profile">Profilul meu</a>
 </div>
 <div class="container">
     <h1>Register</h1>
-    <div th:if="${successMessage != null and !successMessage.isEmpty()}" th:text="${successMessage}" class="message success"></div>
-    <div th:if="${errorMessage != null and !errorMessage.isEmpty()}" th:text="${errorMessage}" class="message error"></div>
+    <div th:if="${successMessage != null && !successMessage.isEmpty()}" th:text="${successMessage}" class="message success"></div>
+    <div th:if="${errorMessage != null && !errorMessage.isEmpty()}" th:text="${errorMessage}" class="message error"></div>
     <form th:action="@{/api/v1/registration}" th:object="${registrationRequest}" method="post">
         <input type="text" th:field="*{firstName}" placeholder="First Name" />
         <input type="text" th:field="*{lastName}" placeholder="Last Name" />
         <input type="email" th:field="*{email}" placeholder="Email" />
         <input type="password" th:field="*{password}" placeholder="Password" />
         <button type="submit">Register</button>
+        <a href="/login" class="link-button">Already have an account? Login here</a>
     </form>
 </div>
 </body>

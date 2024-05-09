@@ -1,46 +1,3 @@
-//package upt.licenta.cristinagusita.armoniagesturilor.registration.token;
-//
-//import lombok.AllArgsConstructor;
-//import org.springframework.data.jpa.repository.Modifying;
-//import org.springframework.stereotype.Service;
-//import org.springframework.transaction.annotation.Transactional;
-//
-//import java.time.LocalDateTime;
-//import java.util.Optional;
-//
-//@Service
-//@AllArgsConstructor
-//public class ConfirmationTokenService {
-//
-//    private final ConfirmationServiceRepository confirmationServiceRepository;
-//
-//    public void saveConfirmationToken(ConfirmationToken token) {
-//        confirmationServiceRepository.save(token);
-//    }
-//
-//    public Optional<ConfirmationToken> getToken(String token) {
-//        return confirmationServiceRepository.findByToken(token);
-//    }
-//
-//    @Transactional
-//    @Modifying
-//    public int setConfirmedAt(String token) {
-//        return confirmationServiceRepository.updateConfirmedAt(
-//                token, java.time.LocalDateTime.now());
-//    }
-//
-//    public void saveToken(ConfirmationToken confirmationToken) {
-//        confirmationServiceRepository.save(confirmationToken);
-//    }
-//
-//    @Transactional
-//    public void updateToken(ConfirmationToken confirmationToken) {
-//        ConfirmationToken token = confirmationServiceRepository.findByToken(confirmationToken.getToken()).get();
-//        token.setExpiresAt(confirmationToken.getExpiresAt());
-//    }
-//}
-
-
 package upt.licenta.cristinagusita.armoniagesturilor.registration.token;
 
 import lombok.AllArgsConstructor;
@@ -134,5 +91,10 @@ public class ConfirmationTokenService {
         saveConfirmationToken(confirmationToken);
         existingUser.setPendingEmailToken(token);
         return token;
+    }
+
+    @Transactional
+    public void deleteByUserId(Long userId) {
+        confirmationServiceRepository.deleteByAppUserId(userId);
     }
 }

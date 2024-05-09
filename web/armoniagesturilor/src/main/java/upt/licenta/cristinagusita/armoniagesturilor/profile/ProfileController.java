@@ -28,6 +28,7 @@ public class ProfileController {
     public String get(Model model, Principal principal) {
         AppUser user = (AppUser) appUserService.loadUserByUsername(principal.getName());
         List<Song> songs = songService.findByUserId(user.getId());
+        songs.sort((s1, s2) -> s2.getId().compareTo(s1.getId()));
         List<Achievement> achievements = achievementService.getUserAchievements(user);
         List<String> achievementNames = achievementService.getAchievementNames(achievements);
         List<Achievement> allAchievements = achievementService.getAllAchievements();

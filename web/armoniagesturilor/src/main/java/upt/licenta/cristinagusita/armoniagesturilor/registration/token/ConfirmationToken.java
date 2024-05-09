@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import upt.licenta.cristinagusita.armoniagesturilor.appuser.AppUser;
 
 import java.time.LocalDateTime;
@@ -38,7 +40,6 @@ public class ConfirmationToken {
 
     private LocalDateTime confirmedAt;
 
-    //One user can have many confirmation tokens
     @ManyToOne
     @JoinColumn(
             nullable = false,
