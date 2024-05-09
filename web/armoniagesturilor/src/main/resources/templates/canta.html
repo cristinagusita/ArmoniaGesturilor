@@ -156,6 +156,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
 <script src="model.js"></script>
 <script>
+
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const destination = audioContext.createMediaStreamDestination();
     function checkAchievements(username) {
         fetch(`/achievements/check/${username}`)
             .then(response => response.text())
@@ -217,11 +220,6 @@
         document.getElementById('resumeButton').style.display = 'none'; // Hide the Resume button
         this.style.display = 'none'; // Hide the Save button
     });
-
-
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-
-    const destination = audioContext.createMediaStreamDestination();
 
     let mediaRecorder = new MediaRecorder(destination.stream);
     let recordedChunks = [];

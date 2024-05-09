@@ -4,16 +4,16 @@ const canvasCtx = canvasElement.getContext('2d');
 
 
 sounds = {
-    0: '../sounds/c3.mp3',
-    1: '../sounds/d3.mp3',
-    2: '../sounds/e3.mp3',
-    3: '../sounds/f3.mp3',
-    4: '../sounds/g3.mp3',
-    5: '../sounds/a3.mp3',
-    6: '../sounds/b3.mp3',
-    7: '../sounds/c4.mp3',
-    8: '../sounds/d4.mp3',
-    9: '../sounds/e4.mp3',
+    0: './sounds/c3.mp3',
+    1: './sounds/d3.mp3',
+    2: './sounds/e3.mp3',
+    3: './sounds/f3.mp3',
+    4: './sounds/g3.mp3',
+    5: './sounds/a3.mp3',
+    6: './sounds/b3.mp3',
+    7: './sounds/c4.mp3',
+    8: './sounds/d4.mp3',
+    9: './sounds/e4.mp3',
     10: 'none'
 }
 
