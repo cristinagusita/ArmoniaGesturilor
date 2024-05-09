@@ -21,11 +21,10 @@ public class LoginService {
     private final AuthenticationManager authenticationManager;
 
     public String login(LoginRequest request) {
-        // load user by email
         UserDetails appUser = appUserService.loadUserByUsername(request.getEmail());
 
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-        // verify if bcrypt password matches
+
         if (bCryptPasswordEncoder.matches(request.getPassword(), appUser.getPassword())) {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())

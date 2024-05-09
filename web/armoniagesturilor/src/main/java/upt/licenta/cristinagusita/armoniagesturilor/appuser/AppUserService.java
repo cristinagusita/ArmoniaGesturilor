@@ -1,6 +1,7 @@
 package upt.licenta.cristinagusita.armoniagesturilor.appuser;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,7 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import upt.licenta.cristinagusita.armoniagesturilor.email.EmailSender;
 import upt.licenta.cristinagusita.armoniagesturilor.exception.SuccessMessage;
 import upt.licenta.cristinagusita.armoniagesturilor.registration.token.ConfirmationTokenService;
+import upt.licenta.cristinagusita.armoniagesturilor.song.SongService;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,6 +26,7 @@ public class AppUserService implements UserDetailsService {
     private final AppUserRepository appUserRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ConfirmationTokenService confirmationTokenService;
+    private final SongService songService;
     private final EmailSender emailSender;
 
     @Override
@@ -50,7 +54,6 @@ public class AppUserService implements UserDetailsService {
 
         appUserRepository.save(appUser);
         String token = confirmationTokenService.createAndSaveToken(appUser); // Create token for new users
-        // Logic to send confirmation email
         return token;
     }
 
@@ -78,7 +81,6 @@ public class AppUserService implements UserDetailsService {
         }
 
         appUserRepository.save(existingUser);
-        // refresh the user in the security context
     }
 
     private String buildEmail(String name, String link) {
@@ -179,4 +181,42 @@ public class AppUserService implements UserDetailsService {
         appUserRepository.save(user);
     }
 
+    public List<AppUser> findAllUsers() {
+        return appUserRepository.findAll();
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        // remove the confirmation tokens associated with the user
+        confirmationTokenService.deleteByUserId(userId);
+        // delete likes associated with the user
+        songService.deleteLikesByUserId(userId);
+        appUserRepository.deleteById(userId);
+    }
+
+    @Transactional
+    public void disableUser(Long userId) {
+        appUserRepository.disableAppUser(userId);
+    }
+
+    @Transactional
+    public void enableUser(Long userId) {
+        appUserRepository.enableAppUser(userId);
+    }
+
+    @Transactional
+    public ResponseEntity<?> toggleUserStatus(Long userId) {
+        Optional<AppUser> userOpt = appUserRepository.findById(userId);
+        if (userOpt.isPresent()) {
+            AppUser user = userOpt.get();
+            if (user.getEnabled()) {
+                disableUser(userId);
+                return ResponseEntity.ok("User disabled successfully");
+            } else {
+                enableUser(userId);
+                return ResponseEntity.ok("User enabled successfully");
+            }
+        }
+        return ResponseEntity.notFound().build();
+    }
 }
