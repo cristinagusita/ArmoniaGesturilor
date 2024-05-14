@@ -1,153 +1,80 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Register | Armonia Gesturilor</title>
+    <title>Înregistrare | Armonia Gesturilor</title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #FAFAFA;
-            color: #333;
-            line-height: 1.6;
-        }
-        .app-title {
-            text-align: center;
-            padding: 40px 20px;
-            background-color: #1E88E5;
-            color: white;
-            font-size: 28px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        .navbar {
-            background-color: white;
-            overflow: hidden;
-            position: sticky;
-            top: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-around;
-            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
-        }
-        .navbar a {
-            color: #555;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-            font-size: 16px;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-        .navbar a:hover, .navbar a:focus {
-            background-color: #1E88E5;
-            color: white;
-        }
-        .container {
-            padding: 20px;
-            margin-top: 20px;
-            text-align: center;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        h1 {
-            margin-bottom: 20px;
-            color: #1E88E5;
-            font-size: 24px;
-        }
-        form {
-            margin-top: 20px;
-        }
-        input[type="text"], input[type="password"], input[type="email"], button {
-            width: 90%;
-            padding: 12px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button, .link-button {
-            background-color: #1E88E5;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            font-size: 16px;
-            text-decoration: none;
-            padding: 12px;
-            display: inline-block;
-            margin: 8px 0;
-            width: 90%;
-        }
-        button:hover, .link-button:hover {
-            background-color: #1565C0;
-        }
-        .link-button {
-            background-color: #FF7043;
-            font-size: 14px;
-            width: auto;
-            padding: 8px 12px;
-        }
-        .link-button:hover {
-            background-color: #FF5722;
-        }
-        .message {
-            text-align: center;
-            margin: 10px auto;
-            font-size: 16px;
-            width: 90%;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .success {
-            background-color: #C8E6C9;
-            color: #256029;
-        }
-        .error {
-            background-color: #FFCDD2;
-            color: #C63737;
-        }
-        @media (max-width: 768px) {
-            .navbar a, .app-title {
-                padding: 10px 12px;
-                font-size: 14px;
-            }
-            .app-title {
-                font-size: 20px;
-            }
-            .container {
-                width: 95%;
-            }
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+
 </head>
 <body>
-<div class="app-title">Armonia Gesturilor</div>
 <div class="navbar">
-    <a href="/home">Acasă</a>
-    <a href="/descopera">Descoperă</a>
-    <a href="/canta">Cântă</a>
-    <a href="/profile">Profilul meu</a>
+    <div class="left">
+        <div class="logo">
+            <img src="../images/favicon.ico" width="64px" height="64px">
+        </div>
+        <div class="app-title">
+            Armonia gesturilor
+        </div>
+    </div>
+    <div class="right">
+        <a href="/">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/>
+            </svg>
+            Acasă
+        </a>
+        <a href="/descopera">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+            Descoperă
+        </a>
+        <a href="/canta">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M499.1 6.3c8.1 6 12.9 15.6 12.9 25.7v72V368c0 44.2-43 80-96 80s-96-35.8-96-80s43-80 96-80c11.2 0 22 1.6 32 4.6V147L192 223.8V432c0 44.2-43 80-96 80s-96-35.8-96-80s43-80 96-80c11.2 0 22 1.6 32 4.6V200 128c0-14.1 9.3-26.6 22.8-30.7l320-96c9.7-2.9 20.2-1.1 28.3 5z"/>
+            </svg>
+            Cântă
+        </a>
+        <a href="/profile">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/>
+            </svg>
+            Profilul meu
+        </a>
+        <a href="/settings">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"/>
+            </svg>
+            Setări
+        </a>
+        <a th:if="${#authorization.expression('isAuthenticated()')}" onclick="location.href='/logout'" class="logout">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M352 96l64 0c17.7 0 32 14.3 32 32l0 256c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0c53 0 96-43 96-96l0-256c0-53-43-96-96-96l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32zm-9.4 182.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L242.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z"/>
+            </svg>
+            Deconectare
+        </a>
+    </div>
 </div>
-<div class="container">
-    <h1>Register</h1>
-    <div th:if="${successMessage != null && !successMessage.isEmpty()}" th:text="${successMessage}" class="message success"></div>
-    <div th:if="${errorMessage != null && !errorMessage.isEmpty()}" th:text="${errorMessage}" class="message error"></div>
-    <form th:action="@{/api/v1/registration}" th:object="${registrationRequest}" method="post">
-        <input type="text" th:field="*{firstName}" placeholder="First Name" />
-        <input type="text" th:field="*{lastName}" placeholder="Last Name" />
-        <input type="email" th:field="*{email}" placeholder="Email" />
-        <input type="password" th:field="*{password}" placeholder="Password" />
-        <button type="submit">Register</button>
-        <a href="/login" class="link-button">Already have an account? Login here</a>
-    </form>
+<div class="discover-container">
+    <div class="card login-card">
+        <h1>Înregistrare</h1>
+        <div th:if="${successMessage != null && !successMessage.isEmpty()}" th:text="${successMessage}" class="message success"></div>
+        <div th:if="${errorMessage != null && !errorMessage.isEmpty()}" th:text="${errorMessage}" class="message error"></div>
+        <form th:action="@{/api/v1/registration}" th:object="${registrationRequest}" method="post">
+            <div class="input-row login-row">
+                <input type="text" th:field="*{firstName}" placeholder="Prenume" />
+            </div>
+            <div class="input-row login-row">
+                <input type="text" th:field="*{lastName}" placeholder="Nume" />
+            </div>
+            <div class="input-row login-row">
+                <input type="email" th:field="*{email}" placeholder="Email" />
+            </div>
+            <div class="input-row login-row">
+                <input type="password" th:field="*{password}" placeholder="Parolă" />
+            </div>
+            <div class="input-row login-row">
+                <button type="submit" class="button-33 center">Înregistrare</button>
+            </div>
+            <div class="input-row login-row">
+                <a href="/login" class="link-button center">Ai deja un cont? Conectează-te aici!</a>
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 </html>

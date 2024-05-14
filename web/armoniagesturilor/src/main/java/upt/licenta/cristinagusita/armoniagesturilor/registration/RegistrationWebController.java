@@ -27,12 +27,12 @@ public class RegistrationWebController {
     public String registerUserAccount(@ModelAttribute("registrationRequest") RegistrationRequest registrationRequest,
                                       BindingResult result, Model model) {
         if (result.hasErrors()) {
-            model.addAttribute("errorMessage", "Validation errors occurred!");
+            model.addAttribute("errorMessage", "Au apărut erori de validare!");
             return "register";
         }
         try {
             registrationService.register(registrationRequest);
-            model.addAttribute("successMessage", "Registration successful! Check your email to confirm your registration.");
+            model.addAttribute("successMessage", "Te-ai înregistrat cu succes! Verifică-ți emailul pentru confirmarea contului!");
         } catch (IllegalStateException e) {
             model.addAttribute("errorMessage", e.getMessage());
         }
@@ -54,7 +54,7 @@ public class RegistrationWebController {
     public String confirmEmailUpdate(@RequestParam("token") String token, Model model) {
         try {
             String message = registrationService.confirmUpdateToken(token);
-            model.addAttribute("successMessage", "Email updated successfully. Please log in with your new email. " + message);
+            model.addAttribute("successMessage", "Email actualizat cu succes! Te rugăm să te conectezi cu noul email. " + message);
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
         }
