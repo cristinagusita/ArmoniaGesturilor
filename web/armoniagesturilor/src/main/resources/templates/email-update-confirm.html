@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Setări</title>
+    <title>Confirmare editare cont | Armonia Gesturilor</title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/style.css">
+    <style>
+        .message { text-align: center; margin: 10px auto; font-size: 16px; width: 90%; padding: 10px; border-radius: 5px; }
+        .success { background-color: #C8E6C9; color: #256029; }
+        .error { background-color: #FFCDD2; color: #C63737; }
+    </style>
 </head>
 <body>
 <div class="navbar">
@@ -42,58 +46,17 @@
             </svg>
             Setări
         </a>
-        <a th:if="${#authorization.expression('isAuthenticated()')}" onclick="location.href='/logout'" class="logout">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M352 96l64 0c17.7 0 32 14.3 32 32l0 256c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0c53 0 96-43 96-96l0-256c0-53-43-96-96-96l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32zm-9.4 182.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L242.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z"/>
-            </svg>
-            Deconectare
-        </a>
+<!--        <a th:if="${#authorization.expression('isAuthenticated()')}" onclick="location.href='/logout'" class="logout">-->
+<!--            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">&lt;!&ndash;!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.&ndash;&gt;<path d="M352 96l64 0c17.7 0 32 14.3 32 32l0 256c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0c53 0 96-43 96-96l0-256c0-53-43-96-96-96l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32zm-9.4 182.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L242.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z"/>-->
+<!--            </svg>-->
+<!--            Deconectare-->
+<!--        </a>-->
     </div>
 </div>
-<div class="discover-container">
-    <div class="card info-card">
-        <h1>Setările contului</h1>
-        <div th:if="${success_details != null && !success_details.isEmpty()}" th:text="${success_details}" class="message success"></div>
-        <form th:action="@{/settings}" th:object="${user}" method="post">
-            <div class="input-row">
-                <label for="firstName">Prenume:</label>
-                <input type="text" id="firstName" th:field="*{firstName}" required />
-            </div>
-            <div class="input-row">
-                <label for="lastName">Nume:</label>
-                <input type="text" id="lastName" th:field="*{lastName}" required />
-            </div>
-            <div class="input-row">
-                <label for="email">Email:</label>
-                <input type="email" id="email" th:field="*{email}" required />
-            </div>
-            <div>
-                <input  class="button-33" type="submit" value="Actualizează informațiile" />
-            </div>
-        </form>
-
-        <h2>Schimbă parola</h2>
-        <div th:if="${error}" class="error-message" th:text="${error}"></div>
-        <div th:if="${success}" class="success-message" th:text="${success}"></div>
-
-        <form th:action="@{/settings/change-password}" method="post">
-            <div class="input-row">
-                <label for="currentPassword">Parola curentă:</label>
-                <input type="password" id="currentPassword" name="currentPassword" required>
-            </div>
-            <div class="input-row">
-                <label for="newPassword">Parola nouă:</label>
-                <input type="password" id="newPassword" name="newPassword" required>
-            </div>
-            <div class="input-row">
-                <label for="confirmNewPassword">Confirmă parola nouă:</label>
-                <input type="password" id="confirmNewPassword" name="confirmNewPassword" required>
-            </div>
-            <div>
-                <input class="button-33" type="submit" value="Schimbă parola" />
-            </div>
-
-        </form>
-    </div>
+<div class="container">
+    <h1>Confirmarea editării informațiilor contului</h1>
+    <div th:if="${successMessage != null}" th:text="${successMessage}" class="message success"></div>
+    <div th:if="${errorMessage != null}" th:text="${errorMessage}" class="message error"></div>
 </div>
 </body>
 </html>

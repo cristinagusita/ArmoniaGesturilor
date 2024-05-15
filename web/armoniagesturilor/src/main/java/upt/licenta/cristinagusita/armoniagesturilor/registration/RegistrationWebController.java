@@ -1,6 +1,11 @@
 package upt.licenta.cristinagusita.armoniagesturilor.registration;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -51,12 +56,17 @@ public class RegistrationWebController {
     }
 
     @GetMapping(path = "/update-email/confirm")
-    public String confirmEmailUpdate(@RequestParam("token") String token, Model model) {
+    public String confirmEmailUpdate(@RequestParam("token") String token, Model model, HttpServletRequest request, HttpServletResponse response) {
         try {
             String message = registrationService.confirmUpdateToken(token);
             model.addAttribute("successMessage", "Email actualizat cu succes! Te rugăm să te conectezi cu noul email. " + message);
         } catch (Exception e) {
             model.addAttribute("errorMessage", e.getMessage());
+        }
+        // logout the user
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
         }
         return "email-update-confirm";
     }

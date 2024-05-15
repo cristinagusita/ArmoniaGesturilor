@@ -19,8 +19,8 @@ public class WebSecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers( "/api/v1/**", "/uploadSong", "/profile/**", "/achievements/**", "/settings/**", "/songs/checkLike/**", "/songs/toggle/**", "/songs/like/**", "/songs/dislike/**", "/songs/delete/**").authenticated()
-                        .requestMatchers("/**.css", "/player.css", "/scripts/player.js", "/style.css", "/home", "/", "/descopera", "/canta", "/model/**", "/model.js", "/sounds/**", "/achievements.css", "/scripts/admin-functions.js", "/registration/**", "/songs/data/**", "/images/**").permitAll()
+                        .requestMatchers("/uploadSong", "/profile/**", "/achievements/**", "/settings/**", "/songs/checkLike/**", "/songs/toggle/**", "/songs/like/**", "/songs/dislike/**", "/songs/delete/**").authenticated()
+                        .requestMatchers("/api/v1/**","/**.css", "/player.css", "/scripts/player.js", "/style.css", "/home", "/", "/descopera", "/canta", "/model/**", "/model.js", "/sounds/**", "/achievements.css", "/scripts/admin-functions.js", "/registration/**", "/songs/data/**", "/images/**", "/forgot-password/**", "update-email/**").permitAll()
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                 )
                 .formLogin((form) -> form

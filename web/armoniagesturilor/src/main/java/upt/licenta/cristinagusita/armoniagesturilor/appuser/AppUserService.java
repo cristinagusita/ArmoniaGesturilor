@@ -44,7 +44,7 @@ public class AppUserService implements UserDetailsService {
                 String token = confirmationTokenService.createAndSaveToken(existingUser); // Handle token re-creation
                 // Logic to send confirmation email again
                 String link = "http://localhost:8081/registration/confirm?token=" + token;
-                emailSender.send(existingUser.getEmail(), buildEmail(existingUser.getFirstName(), link));
+                emailSender.send(existingUser.getEmail(), buildEmail(existingUser.getFirstName(), link), "Confirm email");
                 throw new SuccessMessage("Confirmation email sent again!");
             } else {
                 throw new IllegalStateException("An account with this email already exists!");
@@ -76,7 +76,7 @@ public class AppUserService implements UserDetailsService {
             existingUser.setPendingEmail(newEmail);
             confirmationTokenService.createAndSavePendingEmailToken(existingUser);
             String mailToBeSent = buildEmail(existingUser.getFirstName(), "http://localhost:8081/update-email/confirm?token=" + existingUser.getPendingEmailToken());
-            emailSender.send(newEmail, mailToBeSent);
+            emailSender.send(newEmail, mailToBeSent, "Confirm email");
 
         }
 

@@ -35,32 +35,23 @@ public class SettingsController {
     }
 
 
-//    @PostMapping
-//    public String updateSettings(@ModelAttribute("user") @Valid AppUser userForm) {
-//        AppUser currentUser = (AppUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        appUserService.updateUser(currentUser.getEmail(), userForm.getFirstName(), userForm.getLastName(), userForm.getEmail());
-//        return "redirect:/settings?success";
-//    }
-
     @PostMapping
-    public String updateSettings(@ModelAttribute("user") @Valid AppUser userForm) {
-
-        System.out.println("Entered updateSettings method");
+    public String updateSettings(@ModelAttribute("user") @Valid AppUser userForm, Model model) {
 
         Authentication currentAuth = SecurityContextHolder.getContext().getAuthentication();
         AppUser currentUser = (AppUser) currentAuth.getPrincipal();
 
         // Update user details in the database
         appUserService.updateUser(currentUser.getEmail(), userForm.getFirstName(), userForm.getLastName(), userForm.getEmail());
+        model.addAttribute("success_details", "Detaliile au fost actualizate. Dacă ați schimbat adresa de email, va trebui să vă verificați noul mail pentru confirmare.");
+//        // Fetch updated user details from the database
+//        AppUser updatedUser = (AppUser) appUserService.loadUserByUsername(userForm.getEmail());
+//
+//        // Create a new Authentication with updated details and set it in the context
+//        Authentication newAuth = new UsernamePasswordAuthenticationToken(updatedUser, currentAuth.getCredentials(), currentAuth.getAuthorities());
+//        SecurityContextHolder.getContext().setAuthentication(newAuth);
 
-        // Fetch updated user details from the database
-        AppUser updatedUser = (AppUser) appUserService.loadUserByUsername(userForm.getEmail());
-
-        // Create a new Authentication with updated details and set it in the context
-        Authentication newAuth = new UsernamePasswordAuthenticationToken(updatedUser, currentAuth.getCredentials(), currentAuth.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(newAuth);
-
-        return "redirect:/settings?success";
+        return "settings";
     }
 
 
@@ -72,11 +63,9 @@ public class SettingsController {
                                      RedirectAttributes redirectAttributes) {
         AppUser currentUser = (AppUser) authentication.getPrincipal();
 
-        System.out.println("Entered changeuserpass method");
 
         if (!newPassword.equals(confirmNewPassword)) {
-            System.out.println("New password and confirm password didn't match");
-            redirectAttributes.addFlashAttribute("error", "New passwords must match!");
+            redirectAttributes.addFlashAttribute("error", "Parolele noi trebuie să se potrivească!");
             return "redirect:/settings#change-password";
         }
 
@@ -84,14 +73,12 @@ public class SettingsController {
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
         if (!bCryptPasswordEncoder.matches(currentPassword, currentUser.getPassword())) {
-            System.out.println("Current pass is incorrect");
-            redirectAttributes.addFlashAttribute("error", "Current password is incorrect!");
+            redirectAttributes.addFlashAttribute("error", "Parola curentă este incorectă!");
             return "redirect:/settings#change-password";
         }
 
         appUserService.changePassword(currentUser, bCryptPasswordEncoder.encode(newPassword));
-        System.out.println("Changed pass successfully");
-        redirectAttributes.addFlashAttribute("success", "Password changed successfully!");
+        redirectAttributes.addFlashAttribute("success", "Parolă schimbată cu succes!");
         return "redirect:/settings#change-password";
     }
 
