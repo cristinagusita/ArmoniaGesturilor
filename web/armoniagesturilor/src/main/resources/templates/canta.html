@@ -6,149 +6,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="/style.css">
-    <style>
-        h1, h2 {
-            color: #1E88E5;
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-        input[type=submit], button {
-            background-color: #1E88E5;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            font-size: 18px;
-            margin: 5px;
-        }
-        input[type=submit]:hover, button:hover {
-            background-color: #1565C0;
-        }
-        @media (max-width: 768px) {
-            .navbar a, .app-title, input[type=submit], button {
-                padding: 10px;
-                font-size: 16px;
-            }
-            .app-title {
-                padding: 30px 10px;
-                font-size: 24px;
-            }
-        }
-        #video, #canvas {
-            max-width: 100%;
-            height: auto;
-            border-radius: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-        }
-
-        /* Overlay styles */
-        #achievement-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            animation: fadeIn 0.5s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        #achievement-screen {
-            position: relative;
-            width: 90%;
-            max-width: 600px;
-            margin: auto;
-            padding: 30px;
-            background: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            font-family: 'Roboto', sans-serif;
-            animation: scaleUp 0.3s;
-        }
-
-        @keyframes scaleUp {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
-        .achievement-name {
-            display: block;
-            font-size: 1.5em;
-            color: #1E88E5;
-            font-weight: bold;
-            margin-top: 20px;
-        }
-
-        .close-button {
-            font-size: 1em;
-            padding: 10px 20px;
-            background-color: #1E88E5;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s;
-        }
-
-        .close-button:hover {
-            background-color: #1565C0;
-        }
-
-    </style>
+    <!--    <link rel="stylesheet" type="text/css" href="/canta.css">-->
 </head>
 <body>
 <div id="userData" th:data-username="${username}" style="display:none;"></div>
-<div class="app-title">Armonia Gesturilor</div>
 <div class="navbar">
-    <a href="/home">Acasă</a>
-    <a href="/descopera">Descoperă</a>
-    <a href="/canta">Cântă</a>
-    <a href="/profile">Profilul meu</a>
-    <button th:if="${#authorization.expression('isAuthenticated()')}" class="logout-button" onclick="location.href='/logout'" type="button">Logout</button>
+    <div class="left">
+        <div class="logo">
+            <img src="../images/favicon.ico" width="64px" height="64px">
+        </div>
+        <div class="app-title">
+            Armonia gesturilor
+        </div>
+    </div>
+    <div class="right">
+        <a href="/">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M575.8 255.5c0 18-15 32.1-32 32.1h-32l.7 160.2c0 2.7-.2 5.4-.5 8.1V472c0 22.1-17.9 40-40 40H456c-1.1 0-2.2 0-3.3-.1c-1.4 .1-2.8 .1-4.2 .1H416 392c-22.1 0-40-17.9-40-40V448 384c0-17.7-14.3-32-32-32H256c-17.7 0-32 14.3-32 32v64 24c0 22.1-17.9 40-40 40H160 128.1c-1.5 0-3-.1-4.5-.2c-1.2 .1-2.4 .2-3.6 .2H104c-22.1 0-40-17.9-40-40V360c0-.9 0-1.9 .1-2.8V287.6H32c-18 0-32-14-32-32.1c0-9 3-17 10-24L266.4 8c7-7 15-8 22-8s15 2 21 7L564.8 231.5c8 7 12 15 11 24z"/>
+            </svg>
+            Acasă
+        </a>
+        <a href="/descopera">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z"/></svg>
+            Descoperă
+        </a>
+        <a href="/canta">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M499.1 6.3c8.1 6 12.9 15.6 12.9 25.7v72V368c0 44.2-43 80-96 80s-96-35.8-96-80s43-80 96-80c11.2 0 22 1.6 32 4.6V147L192 223.8V432c0 44.2-43 80-96 80s-96-35.8-96-80s43-80 96-80c11.2 0 22 1.6 32 4.6V200 128c0-14.1 9.3-26.6 22.8-30.7l320-96c9.7-2.9 20.2-1.1 28.3 5z"/>
+            </svg>
+            Cântă
+        </a>
+        <div class="dropdown" sec:authorize="hasAuthority('ADMIN')">
+            <a class="dropbtn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M234.7 42.7L197 56.8c-3 1.1-5 4-5 7.2s2 6.1 5 7.2l37.7 14.1L248.8 123c1.1 3 4 5 7.2 5s6.1-2 7.2-5l14.1-37.7L315 71.2c3-1.1 5-4 5-7.2s-2-6.1-5-7.2L277.3 42.7 263.2 5c-1.1-3-4-5-7.2-5s-6.1 2-7.2 5L234.7 42.7zM46.1 395.4c-18.7 18.7-18.7 49.1 0 67.9l34.6 34.6c18.7 18.7 49.1 18.7 67.9 0L529.9 116.5c18.7-18.7 18.7-49.1 0-67.9L495.3 14.1c-18.7-18.7-49.1-18.7-67.9 0L46.1 395.4zM484.6 82.6l-105 105-23.3-23.3 105-105 23.3 23.3zM7.5 117.2C3 118.9 0 123.2 0 128s3 9.1 7.5 10.8L64 160l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L128 160l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L128 96 106.8 39.5C105.1 35 100.8 32 96 32s-9.1 3-10.8 7.5L64 96 7.5 117.2zm352 256c-4.5 1.7-7.5 6-7.5 10.8s3 9.1 7.5 10.8L416 416l21.2 56.5c1.7 4.5 6 7.5 10.8 7.5s9.1-3 10.8-7.5L480 416l56.5-21.2c4.5-1.7 7.5-6 7.5-10.8s-3-9.1-7.5-10.8L480 352l-21.2-56.5c-1.7-4.5-6-7.5-10.8-7.5s-9.1 3-10.8 7.5L416 352l-56.5 21.2z"/></svg>
+                Gestionează
+            </a>
+            <div class="dropdown-content">
+                <a href="/admin/users">Gestionare conturi</a>
+                <a href="/admin/songs">Gestionare melodii</a>
+            </div>
+        </div>
+        <a href="/profile">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"/>
+            </svg>
+            Profilul meu
+        </a>
+        <a href="/settings">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M495.9 166.6c3.2 8.7 .5 18.4-6.4 24.6l-43.3 39.4c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l43.3 39.4c6.9 6.2 9.6 15.9 6.4 24.6c-4.4 11.9-9.7 23.3-15.8 34.3l-4.7 8.1c-6.6 11-14 21.4-22.1 31.2c-5.9 7.2-15.7 9.6-24.5 6.8l-55.7-17.7c-13.4 10.3-28.2 18.9-44 25.4l-12.5 57.1c-2 9.1-9 16.3-18.2 17.8c-13.8 2.3-28 3.5-42.5 3.5s-28.7-1.2-42.5-3.5c-9.2-1.5-16.2-8.7-18.2-17.8l-12.5-57.1c-15.8-6.5-30.6-15.1-44-25.4L83.1 425.9c-8.8 2.8-18.6 .3-24.5-6.8c-8.1-9.8-15.5-20.2-22.1-31.2l-4.7-8.1c-6.1-11-11.4-22.4-15.8-34.3c-3.2-8.7-.5-18.4 6.4-24.6l43.3-39.4C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L22.4 191.2c-6.9-6.2-9.6-15.9-6.4-24.6c4.4-11.9 9.7-23.3 15.8-34.3l4.7-8.1c6.6-11 14-21.4 22.1-31.2c5.9-7.2 15.7-9.6 24.5-6.8l55.7 17.7c13.4-10.3 28.2-18.9 44-25.4l12.5-57.1c2-9.1 9-16.3 18.2-17.8C227.3 1.2 241.5 0 256 0s28.7 1.2 42.5 3.5c9.2 1.5 16.2 8.7 18.2 17.8l12.5 57.1c15.8 6.5 30.6 15.1 44 25.4l55.7-17.7c8.8-2.8 18.6-.3 24.5 6.8c8.1 9.8 15.5 20.2 22.1 31.2l4.7 8.1c6.1 11 11.4 22.4 15.8 34.3zM256 336a80 80 0 1 0 0-160 80 80 0 1 0 0 160z"/>
+            </svg>
+            Setări
+        </a>
+        <a th:if="${#authorization.expression('isAuthenticated()')}" onclick="location.href='/logout'" class="logout">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M352 96l64 0c17.7 0 32 14.3 32 32l0 256c0 17.7-14.3 32-32 32l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32l64 0c53 0 96-43 96-96l0-256c0-53-43-96-96-96l-64 0c-17.7 0-32 14.3-32 32s14.3 32 32 32zm-9.4 182.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L242.7 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128z"/>
+            </svg>
+            Deconectare
+        </a>
+    </div>
 </div>
+<!-- Overlay for blurring the background -->
 <div id="achievement-overlay">
-    <div id="achievement-screen">
-        Congratulations! You've unlocked a new achievement:
+    <div id="achievement-screen" class="card">
+        Felicitări! Ai atins un nou obiectiv!
         <span class="achievement-name"></span>
-        <button class="close-button" onclick="hideAchievementScreen()">Close</button>
+        <button class="close-button" onclick="hideAchievementScreen()">Închide</button>
     </div>
 </div>
 
-
-
-<div class="container">
-    <span th:if="${#authorization.expression('isAuthenticated()')}">
-        Hello, <span th:text="${#authentication.principal.firstName}">User</span>!
-    </span>
-    <span th:unless="${#authorization.expression('isAuthenticated()')}">
-        Hello, Guest!
-    </span>
-
-    <div th:if="${#authorization.expression('isAuthenticated()')}">
-        <input type="submit" id="recordButton" value="Record"/>
-        <input type="submit" id="resumeButton" value="Resume Recording" style="display:none;"/>
-        <input type="submit" id="saveButton" value="Save" style="display:none;"/>
+<div class="profile-container">
+    <div class="container width-40">
+        <div class="input-row">
+            <h2 th:if="${#authorization.expression('isAuthenticated()')}" class="center">
+                Bună, <span th:text="${#authentication.principal.firstName}">User</span>!
+            </h2>
+            <h2 th:unless="${#authorization.expression('isAuthenticated()')}" class="center">
+                Bună, oaspete!
+            </h2>
+        </div>
+        <div class="input-row">
+            <p>Ești invitat să descoperi lumea fascinantă a muzicii într-un mod inedit: ridică-ți mâinile în aer și lasă-te purtat de ritm!</p>
+        </div>
+        <div class="input-row">
+            <p>Apasă butonul "Înregistrează" când dorești să îți începi capodopera!</p>
+        </div>
+        <div class="input-row">
+            <div class="slide-container">
+                <div data-text="Înregistrează" style="--r:-15;" class="glass">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M499.1 6.3c8.1 6 12.9 15.6 12.9 25.7v72V368c0 44.2-43 80-96 80s-96-35.8-96-80s43-80 96-80c11.2 0 22 1.6 32 4.6V147L192 223.8V432c0 44.2-43 80-96 80s-96-35.8-96-80s43-80 96-80c11.2 0 22 1.6 32 4.6V200 128c0-14.1 9.3-26.6 22.8-30.7l320-96c9.7-2.9 20.2-1.1 28.3 5z"/></svg>
+                </div>
+                <div data-text="Salvează" style="--r:5;" class="glass">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M111.4 256.3l5.8 65-5.8 68.3c-.3 2.5-2.2 4.4-4.4 4.4s-4.2-1.9-4.2-4.4l-5.6-68.3 5.6-65c0-2.2 1.9-4.2 4.2-4.2 2.2 0 4.1 2 4.4 4.2zm21.4-45.6c-2.8 0-4.7 2.2-5 5l-5 105.6 5 68.3c.3 2.8 2.2 5 5 5 2.5 0 4.7-2.2 4.7-5l5.8-68.3-5.8-105.6c0-2.8-2.2-5-4.7-5zm25.5-24.1c-3.1 0-5.3 2.2-5.6 5.3l-4.4 130 4.4 67.8c.3 3.1 2.5 5.3 5.6 5.3 2.8 0 5.3-2.2 5.3-5.3l5.3-67.8-5.3-130c0-3.1-2.5-5.3-5.3-5.3zM7.2 283.2c-1.4 0-2.2 1.1-2.5 2.5L0 321.3l4.7 35c.3 1.4 1.1 2.5 2.5 2.5s2.2-1.1 2.5-2.5l5.6-35-5.6-35.6c-.3-1.4-1.1-2.5-2.5-2.5zm23.6-21.9c-1.4 0-2.5 1.1-2.5 2.5l-6.4 57.5 6.4 56.1c0 1.7 1.1 2.8 2.5 2.8s2.5-1.1 2.8-2.5l7.2-56.4-7.2-57.5c-.3-1.4-1.4-2.5-2.8-2.5zm25.3-11.4c-1.7 0-3.1 1.4-3.3 3.3L47 321.3l5.8 65.8c.3 1.7 1.7 3.1 3.3 3.1 1.7 0 3.1-1.4 3.1-3.1l6.9-65.8-6.9-68.1c0-1.9-1.4-3.3-3.1-3.3zm25.3-2.2c-1.9 0-3.6 1.4-3.6 3.6l-5.8 70 5.8 67.8c0 2.2 1.7 3.6 3.6 3.6s3.6-1.4 3.9-3.6l6.4-67.8-6.4-70c-.3-2.2-2-3.6-3.9-3.6zm241.4-110.9c-1.1-.8-2.8-1.4-4.2-1.4-2.2 0-4.2 .8-5.6 1.9-1.9 1.7-3.1 4.2-3.3 6.7v.8l-3.3 176.7 1.7 32.5 1.7 31.7c.3 4.7 4.2 8.6 8.9 8.6s8.6-3.9 8.6-8.6l3.9-64.2-3.9-177.5c-.4-3-2-5.8-4.5-7.2zm-26.7 15.3c-1.4-.8-2.8-1.4-4.4-1.4s-3.1 .6-4.4 1.4c-2.2 1.4-3.6 3.9-3.6 6.7l-.3 1.7-2.8 160.8s0 .3 3.1 65.6v.3c0 1.7 .6 3.3 1.7 4.7 1.7 1.9 3.9 3.1 6.4 3.1 2.2 0 4.2-1.1 5.6-2.5 1.7-1.4 2.5-3.3 2.5-5.6l.3-6.7 3.1-58.6-3.3-162.8c-.3-2.8-1.7-5.3-3.9-6.7zm-111.4 22.5c-3.1 0-5.8 2.8-5.8 6.1l-4.4 140.6 4.4 67.2c.3 3.3 2.8 5.8 5.8 5.8 3.3 0 5.8-2.5 6.1-5.8l5-67.2-5-140.6c-.2-3.3-2.7-6.1-6.1-6.1zm376.7 62.8c-10.8 0-21.1 2.2-30.6 6.1-6.4-70.8-65.8-126.4-138.3-126.4-17.8 0-35 3.3-50.3 9.4-6.1 2.2-7.8 4.4-7.8 9.2v249.7c0 5 3.9 8.6 8.6 9.2h218.3c43.3 0 78.6-35 78.6-78.3 .1-43.6-35.2-78.9-78.5-78.9zm-296.7-60.3c-4.2 0-7.5 3.3-7.8 7.8l-3.3 136.7 3.3 65.6c.3 4.2 3.6 7.5 7.8 7.5 4.2 0 7.5-3.3 7.5-7.5l3.9-65.6-3.9-136.7c-.3-4.5-3.3-7.8-7.5-7.8zm-53.6-7.8c-3.3 0-6.4 3.1-6.4 6.7l-3.9 145.3 3.9 66.9c.3 3.6 3.1 6.4 6.4 6.4 3.6 0 6.4-2.8 6.7-6.4l4.4-66.9-4.4-145.3c-.3-3.6-3.1-6.7-6.7-6.7zm26.7 3.4c-3.9 0-6.9 3.1-6.9 6.9L227 321.3l3.9 66.4c.3 3.9 3.1 6.9 6.9 6.9s6.9-3.1 6.9-6.9l4.2-66.4-4.2-141.7c0-3.9-3-6.9-6.9-6.9z"/></svg>
+                </div>
+                <div data-text="Împărtășește" style="--r:25;" class="glass">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L464.4 300.4c30.4-28.3 47.6-68 47.6-109.5v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5z"/></svg>
+                </div>
+            </div>
+        </div>
+        <div class="card hello-card">
+            <h2>Încearcă acum!</h2>
+            <!-- if the user is authenticated, then display buttons. If not, there should only be the "Record" button and pressing on it should redirect to    the login page -->
+            <div th:if="${#authorization.expression('isAuthenticated()')}" class="record-row">
+                <input type="submit" id="recordButton" value="Înregistrează" class="button-33 main-button"/>
+                <input type="submit" id="resumeButton" value="Reia înregistrarea" style="display:none;" class="button-33"/>
+                <input type="submit" id="saveButton" value="Salvează" style="display:none;" class="button-33"/>
+                <input type="submit" id="cancelButton" value="Anulează" style="display:none;" class="button-33"/>
+            </div>
+            <div th:unless="${#authorization.expression('isAuthenticated()')}" class="record-row">
+                <button onclick="location.href='/login'" class="button-33">
+                    Înregistrează
+                </button>
+            </div>
+        </div>
+        <div class="input-row">
+            <div class="input-image">
+                <img src="../images/hands_legend.png" width="100%" height="300px">
+            </div>
+        </div>
     </div>
-    <div th:unless="${#authorization.expression('isAuthenticated()')}">
-        <button onclick="location.href='/login'">Record</button>
+
+    <div class="container sing-container">
+        <div class="video-input">
+            <h2>Poziționează mâinile în cadrul camerei video</h2>
+            <video id="video" width="640" height="480" autoplay style="display: none;"></video>
+            <canvas id="canvas" width="640" height="480"></canvas>
+        </div>
     </div>
-</div>
-<div class="container">
-    <h2>MediaPipe Hands Example</h2>
-    <video id="video" width="640" height="480" autoplay style="display: none;"></video>
-    <canvas id="canvas" width="640" height="480"></canvas>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands"></script>
@@ -177,9 +156,9 @@
         achievementOverlay.style.display = 'flex'; // Show the overlay
 
         // Automatically hide the screen after 5 seconds
-        //setTimeout(() => {
-        //   achievementOverlay.style.display = 'none';
-        //}, 5000);
+        setTimeout(() => {
+            achievementOverlay.style.display = 'none';
+        }, 5000);
     }
 
     function hideAchievementScreen() {
@@ -188,27 +167,28 @@
     }
 
 
-    // JavaScript to toggle button text between "Record" and "Stop Recording", and change colors
+
     document.getElementById('recordButton').addEventListener('click', function() {
         // Start recording
         recordedChunks = [];
         mediaRecorder.start();
         this.style.display = 'none'; // Hide the Record button
-        document.getElementById('resumeButton').style.display = 'inline'; // Initially, show only the Resume button
-        document.getElementById('saveButton').style.display = 'inline'; // Show the Save button alongside
-        document.getElementById('resumeButton').value = "Pause"; // Change Resume button text to "Pause"
+        document.getElementById('resumeButton').style.display = 'inline';
+        document.getElementById('saveButton').style.display = 'inline';
+        document.getElementById('cancelButton').style.display = 'inline';
+        document.getElementById('resumeButton').value = "Pauză";
     });
 
     document.getElementById('resumeButton').addEventListener('click', function() {
         var resumeButton = this;
-        if (resumeButton.value === "Pause") {
+        if (resumeButton.value === "Pauză") {
             // Pause recording
             mediaRecorder.pause();
-            resumeButton.value = "Resume Recording"; // Change button text to "Resume Recording"
+            resumeButton.value = "Reia înregistrarea";
         } else {
             // Resume recording
             mediaRecorder.resume();
-            resumeButton.value = "Pause"; // Change button text back to "Pause"
+            resumeButton.value = "Pauză";
         }
     });
 
@@ -216,9 +196,21 @@
         // Stop recording and save
         mediaRecorder.stop();
         // Reset the UI
-        document.getElementById('recordButton').style.display = 'inline'; // Show the Record button again
-        document.getElementById('resumeButton').style.display = 'none'; // Hide the Resume button
+        document.getElementById('recordButton').style.display = 'inline';
+        document.getElementById('resumeButton').style.display = 'none';
         this.style.display = 'none'; // Hide the Save button
+        document.getElementById('cancelButton').style.display = 'none';
+    });
+
+    document.getElementById('cancelButton').addEventListener('click', function() {
+        // Cancel recording
+        mediaRecorder.stop();
+        recordedChunks = []; // Clear recorded chunks
+        // Reset the UI
+        document.getElementById('recordButton').style.display = 'inline';
+        document.getElementById('resumeButton').style.display = 'none';
+        document.getElementById('saveButton').style.display = 'none';
+        this.style.display = 'none';
     });
 
     let mediaRecorder = new MediaRecorder(destination.stream);
@@ -231,12 +223,17 @@
     }
 
     mediaRecorder.onstop = async function() {
+        if (recordedChunks.length === 0) {
+            // If there are no recorded chunks, it means the recording was cancelled
+            console.log('Recording cancelled');
+            return;
+        }
         const audioBlob = new Blob(recordedChunks, {type: 'audio/webm'});
 
-        let fileName = prompt("Please enter a name for your audio file:", "My Recording");
+        let fileName = prompt("Te rugăm să introduci un nume pentru înregistrarea ta:", "Înregistrare mea audio");
         if (fileName === null) {
             // User pressed the Cancel button, do not save the recording
-            alert('Upload canceled');
+            alert('Salvare anulată!');
             return;
         }
 
@@ -258,7 +255,7 @@
             if (!response.ok) throw new Error('Network response was not ok');
             const result = await response.text();
             console.log(result);
-            alert('Upload successful');
+            alert('Salvare reușită! Accesează profilul tău pentru a vedea înregistrarea.');
             var userDataDiv = document.getElementById('userData');
             var username = userDataDiv.getAttribute('data-username');
             console.log(username);
@@ -268,7 +265,6 @@
             alert('Upload failed');
         }
     };
-
 
 </script>
 </body>
