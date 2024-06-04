@@ -1,5 +1,6 @@
 package upt.licenta.cristinagusita.armoniagesturilor.login;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,10 +19,11 @@ public class LoginController {
     private final AuthenticationManager authenticationManager;
 
     @GetMapping("/login")
-    public String getLogin(Model model, @RequestParam(value = "error", required = false) String error) {
+    public String getLogin(Model model, @RequestParam(value = "error", required = false) String error, HttpServletRequest request) {
         if (error != null) {
-            model.addAttribute("errorMessage", "Invalid username or password!");
+            model.addAttribute("errorMessage", "Email sau parolă invalide!");
         }
+
         return "login";
     }
 
@@ -36,7 +38,7 @@ public class LoginController {
             SecurityContextHolder.getContext().setAuthentication(auth);
             return "redirect:/profile";  // Redirect to the user profile or another appropriate page
         } catch (BadCredentialsException e) {
-            model.addAttribute("errorMessage", "Invalid email or password");
+            model.addAttribute("errorMessage", "Email sau parolă invalide!");
             return "login";  // Stay on the login page
         } catch (Exception e) {
             model.addAttribute("errorMessage", "An unexpected error occurred");

@@ -31,6 +31,7 @@ public class AppUser implements UserDetails {
             generator = "student_sequence"
     )
     private Long id;
+    private String postUsername;
     private String firstName;
     private String lastName;
     @Column(unique = true)
@@ -59,6 +60,21 @@ public class AppUser implements UserDetails {
         this.email = email;
         this.password = password;
         this.appUserRole = appUserRole;
+        this.postUsername = generateUsername(email);
+    }
+
+    private String generateUsername(String email) {
+        String baseUsername = email.split("@")[0];
+        return baseUsername + getRandomDigits(4);
+    }
+
+    private String getRandomDigits(int length) {
+        Random rand = new Random();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < length; i++) {
+            sb.append(rand.nextInt(10));
+        }
+        return sb.toString();
     }
 
     @Override

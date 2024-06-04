@@ -10,3 +10,19 @@
 .button-container>*{
     margin:10px;
 }
+.badge-header{
+    color: black;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.connected-as > span{
+    color: #4aa4cb;
+    font-weight: bold;
+}
+
+.badge-header > div{
+    margin:10px;
+}

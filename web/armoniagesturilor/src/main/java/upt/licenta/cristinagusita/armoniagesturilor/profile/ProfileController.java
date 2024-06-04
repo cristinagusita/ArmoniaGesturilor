@@ -44,6 +44,7 @@ public class ProfileController {
                 )
         );
 
+        model.addAttribute("user", user);
         model.addAttribute("songs", songs);
         model.addAttribute("achievements", achievements);
         model.addAttribute("achievementNames", achievementNames);

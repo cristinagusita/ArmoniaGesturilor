@@ -25,7 +25,9 @@ public class AdminController {
 
     @GetMapping("/users")
     public String listUsers(Model model) {
-        model.addAttribute("users", userService.findAllUsers());
+        List<AppUser> users = userService.findAllUsers();
+        users.removeIf(user -> user.getAppUserRole().toString().equals("ADMIN"));
+        model.addAttribute("users", users);
         return "admin_users";
     }
 

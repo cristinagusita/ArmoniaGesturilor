@@ -1,6 +1,7 @@
 package upt.licenta.cristinagusita.armoniagesturilor.song;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -51,31 +52,20 @@ public class SongController {
 
     @GetMapping("/songs/data/{songId}")
     @Transactional
-    public ResponseEntity<byte[]> getSongData(@PathVariable Long songId, Principal principal) {
+    public ResponseEntity<ByteArrayResource> getSongData(@PathVariable Long songId, Principal principal) {
         Optional<Song> songOpt = songService.findById(songId);
-
-//        AppUser user = (AppUser) userService.loadUserByUsername(principal.getName());
-
-//        int ok = 0;
-//        for (Song song : user.getSongs()) {
-//            if (song.getId().equals(songId)) {
-//                ok = 1;
-//            }
-//        }
-//
-//        if (ok == 0) {
-//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-//        }
-
 
         if (songOpt.isPresent()) {
             Song song = songOpt.get();
             byte[] data = song.getData();
             HttpHeaders headers = new HttpHeaders();
 
+            ByteArrayResource resource = new ByteArrayResource(data);
+
             headers.setContentType(MediaType.parseMediaType(song.getContentType()));
 
-            return new ResponseEntity<>(data, headers, HttpStatus.OK);
+
+            return new ResponseEntity<ByteArrayResource>(resource, headers, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
